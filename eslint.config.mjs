@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Supabase CLI-generated temp/secrets directories (see supabase/.gitignore,
+    // which already excludes these from git — ESLint doesn't read that file).
+    "supabase/.temp/**",
+    "supabase/.branches/**",
   ]),
 ]);
 
