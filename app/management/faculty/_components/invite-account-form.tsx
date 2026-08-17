@@ -13,11 +13,11 @@ export function InviteFacultyAccountForm({ facultyId, defaultEmail }: { facultyI
   return (
     <form action={formAction} className="flex flex-wrap items-end gap-3">
       <div className="min-w-64">
-        <label htmlFor="email" className="block text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+        <label htmlFor="invite_email" className="block text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
           Email to invite
         </label>
         <input
-          id="email"
+          id="invite_email"
           name="email"
           type="email"
           required

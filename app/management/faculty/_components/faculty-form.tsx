@@ -95,11 +95,11 @@ export function FacultyForm({
           />
         </div>
         <div className="space-y-1">
-          <label htmlFor="email" className={labelClasses}>
+          <label htmlFor="faculty_contact_email" className={labelClasses}>
             Email (optional)
           </label>
           <input
-            id="email"
+            id="faculty_contact_email"
             name="email"
             type="email"
             defaultValue={defaultValues?.email ?? ""}
