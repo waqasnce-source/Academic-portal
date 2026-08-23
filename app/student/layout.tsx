@@ -1,50 +1,40 @@
-import Link from "next/link";
 import { requireRole } from "@/lib/supabase/dal";
 import { logout } from "@/app/login/actions";
-
-const navLinkClasses =
-  "shrink-0 rounded-md px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-50";
+import { BrandHeader } from "@/app/_components/brand-header";
+import { NavLink } from "@/app/_components/nav-link";
 
 export default async function StudentLayout(props: LayoutProps<"/student">) {
   const profile = await requireRole("student");
 
   return (
     <div className="flex flex-1 flex-col md:flex-row">
-      <aside className="border-b border-zinc-200 md:w-64 md:shrink-0 md:border-b-0 md:border-r dark:border-zinc-800">
-        <div className="px-4 py-4">
-          <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-            Academic Portal
-          </p>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">Student</p>
+      <aside className="bg-brand-900 md:w-64 md:shrink-0">
+        <div className="space-y-2 border-b border-white/10 px-4 py-4">
+          <BrandHeader size="sm" variant="on-dark" />
+          <p className="text-xs font-medium tracking-wide text-gold-300 uppercase">Student</p>
         </div>
-        <nav className="flex gap-1 overflow-x-auto px-2 pb-3 md:flex-col md:overflow-visible">
-          <Link href="/student" className={navLinkClasses}>
+        <nav className="flex gap-1 overflow-x-auto px-2 py-3 md:flex-col md:overflow-visible">
+          <NavLink href="/student" exact>
             Dashboard
-          </Link>
-          <Link href="/student/progress" className={navLinkClasses}>
-            Academic Progress
-          </Link>
-          <Link href="/student/courses" className={navLinkClasses}>
-            My Courses
-          </Link>
-          <Link href="/student/degree-progress" className={navLinkClasses}>
-            Degree Progress
-          </Link>
+          </NavLink>
+          <NavLink href="/student/progress">Academic Progress</NavLink>
+          <NavLink href="/student/courses">My Courses</NavLink>
+          <NavLink href="/student/degree-progress">Degree Progress</NavLink>
         </nav>
       </aside>
 
       <div className="flex flex-1 flex-col">
-        <header className="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+        <header className="flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-6 py-4 dark:border-slate-800 dark:bg-slate-950">
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-50">
+            <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-50">
               {profile.full_name}
             </p>
-            <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="truncate text-xs text-slate-500 dark:text-slate-400">
               {profile.email}
             </p>
           </div>
           <form action={logout}>
-            <button className="shrink-0 text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50">
+            <button className="shrink-0 text-sm text-slate-500 underline hover:text-brand-700 dark:hover:text-brand-300">
               Sign out
             </button>
           </form>

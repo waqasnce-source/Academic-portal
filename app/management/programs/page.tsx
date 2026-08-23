@@ -32,10 +32,10 @@ export default async function ManagementProgramsPage(
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
             Program Management
           </h1>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {error
               ? "—"
               : `${count.toLocaleString()} program${count === 1 ? "" : "s"} found`}
@@ -43,9 +43,24 @@ export default async function ManagementProgramsPage(
         </div>
         <Link
           href="/management/programs/new"
-          className="shrink-0 rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="shrink-0 rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-600 dark:hover:bg-brand-500"
         >
           Add Program
+        </Link>
+      </div>
+
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+        <Link href="/management/departments" className="text-slate-500 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50">
+          Departments
+        </Link>
+        <Link href="/management/specializations" className="text-slate-500 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50">
+          Specializations
+        </Link>
+        <Link
+          href="/management/curriculum-requirements"
+          className="text-slate-500 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
+        >
+          Curriculum Requirements
         </Link>
       </div>
 

@@ -14,7 +14,7 @@ export function SessionCreateForm({ offeringId }: { offeringId: string }) {
   return (
     <form
       action={formAction}
-      className="flex flex-wrap items-end gap-3 rounded-md border border-dashed border-zinc-300 p-4 dark:border-zinc-700"
+      className="flex flex-wrap items-end gap-3 rounded-md border border-dashed border-slate-300 p-4 dark:border-slate-700"
     >
       <div className="flex flex-col gap-1">
         <label htmlFor="class_date" className={labelClasses}>
@@ -57,7 +57,7 @@ export function SessionCreateForm({ offeringId }: { offeringId: string }) {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
       >
         {pending ? "Creating..." : "Add Session"}
       </button>

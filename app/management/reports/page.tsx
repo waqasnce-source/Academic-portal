@@ -35,8 +35,8 @@ export default async function ReportsIndexPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Reports</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Reports</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Institution-wide reports, computed from existing academic data.
         </p>
       </div>
@@ -46,10 +46,10 @@ export default async function ReportsIndexPage() {
           <Link
             key={report.slug}
             href={`/management/reports/${report.slug}`}
-            className="rounded-lg border border-zinc-200 bg-white p-5 transition-colors hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-700"
+            className="rounded-lg border border-slate-200 bg-white p-5 transition-colors hover:border-slate-300 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-slate-700"
           >
-            <p className="font-medium text-zinc-900 dark:text-zinc-50">{report.label}</p>
-            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{report.description}</p>
+            <p className="font-medium text-slate-900 dark:text-slate-50">{report.label}</p>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{report.description}</p>
           </Link>
         ))}
       </div>

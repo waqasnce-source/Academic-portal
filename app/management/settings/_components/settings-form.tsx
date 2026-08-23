@@ -23,7 +23,7 @@ export function SettingsForm({ settings }: { settings: SystemSettings }) {
   return (
     <form
       action={formAction}
-      className="max-w-lg space-y-5 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950"
+      className="max-w-lg space-y-5 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"
     >
       <div className="space-y-1">
         <label htmlFor="minimum_attendance_percentage" className={labelClasses}>
@@ -41,9 +41,9 @@ export function SettingsForm({ settings }: { settings: SystemSettings }) {
             required
             className={`${fieldClasses} w-32`}
           />
-          <span className="text-sm text-zinc-500 dark:text-zinc-400">%</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">%</span>
         </div>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs text-slate-500 dark:text-slate-400">
           Used by attendance reporting to flag low attendance. Must be between 0 and 100.
         </p>
       </div>
@@ -61,7 +61,7 @@ export function SettingsForm({ settings }: { settings: SystemSettings }) {
           required
           className={fieldClasses}
         />
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs text-slate-500 dark:text-slate-400">
           Must be a valid IANA timezone identifier (e.g. &ldquo;Asia/Karachi&rdquo;, &ldquo;UTC&rdquo;).
         </p>
       </div>
@@ -73,15 +73,15 @@ export function SettingsForm({ settings }: { settings: SystemSettings }) {
         <p className="text-sm text-emerald-600 dark:text-emerald-400">Settings saved.</p>
       )}
 
-      <div className="flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-800">
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+      <div className="flex items-center justify-between border-t border-slate-200 pt-4 dark:border-slate-800">
+        <p className="text-xs text-slate-500 dark:text-slate-400">
           Last updated {formatDateTime(settings.updatedAt)}
           {settings.updatedByName ? ` by ${settings.updatedByName}` : ""}
         </p>
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
         >
           {pending ? "Saving..." : "Save"}
         </button>

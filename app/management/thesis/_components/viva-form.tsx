@@ -25,7 +25,7 @@ export function VivaForm({
   const [state, formAction, pending] = useActionState<ThesisFormState | undefined, FormData>(boundAction, undefined);
 
   return (
-    <form action={formAction} className="space-y-4 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
+    <form action={formAction} className="space-y-4 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
           <label htmlFor="scheduled_date" className={labelClasses}>
@@ -71,7 +71,7 @@ export function VivaForm({
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
       >
         {pending ? "Saving..." : "Save"}
       </button>

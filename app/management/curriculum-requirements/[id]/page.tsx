@@ -31,11 +31,11 @@ export default async function EditCurriculumRequirementPage(
       <div>
         <Link
           href="/management/curriculum-requirements"
-          className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50"
+          className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50"
         >
           ← Curriculum Requirements
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Edit Requirement</h1>
+        <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">Edit Requirement</h1>
       </div>
       <CurriculumRequirementForm
         action={updateCurriculumRequirementAction.bind(null, requirement.id)}

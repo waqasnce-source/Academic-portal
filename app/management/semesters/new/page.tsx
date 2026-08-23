@@ -11,11 +11,11 @@ export default async function NewSemesterPage() {
       <div>
         <Link
           href="/management/semesters"
-          className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50"
+          className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50"
         >
           ← Semesters
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
           Add Semester
         </h1>
       </div>

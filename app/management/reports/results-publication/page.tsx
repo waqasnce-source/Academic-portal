@@ -26,21 +26,21 @@ export default async function ResultsPublicationReportPage(
       <div>
         <Link
           href="/management/reports"
-          className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50"
+          className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50"
         >
           ← Reports
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
           Results Publication Status Summary
         </h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           How many recorded results have been published to students vs. still held back.
         </p>
       </div>
 
       <form
         method="GET"
-        className="flex flex-wrap items-end gap-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950"
+        className="flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950"
       >
         <div className="flex min-w-[200px] flex-1 flex-col gap-1">
           <label htmlFor="q" className={labelClasses}>
@@ -66,13 +66,13 @@ export default async function ResultsPublicationReportPage(
         <div className="flex gap-2">
           <button
             type="submit"
-            className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-600 dark:hover:bg-brand-500"
           >
             Apply
           </button>
           <Link
             href="/management/reports/results-publication"
-            className="rounded-md border border-zinc-300 px-4 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+            className="rounded-md border border-slate-300 px-4 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-900"
           >
             Reset
           </Link>
@@ -83,27 +83,27 @@ export default async function ResultsPublicationReportPage(
         <ErrorBanner message={summary.error} />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Total results</p>
-            <p className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+          <div className="rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950">
+            <p className="text-sm text-slate-500 dark:text-slate-400">Total results</p>
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
               {summary.total.toLocaleString()}
             </p>
           </div>
-          <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Published</p>
+          <div className="rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950">
+            <p className="text-sm text-slate-500 dark:text-slate-400">Published</p>
             <p className="mt-2 text-2xl font-semibold text-emerald-600 dark:text-emerald-400">
               {summary.published.toLocaleString()}
             </p>
           </div>
-          <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Unpublished</p>
+          <div className="rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950">
+            <p className="text-sm text-slate-500 dark:text-slate-400">Unpublished</p>
             <p className="mt-2 text-2xl font-semibold text-amber-600 dark:text-amber-400">
               {summary.unpublished.toLocaleString()}
             </p>
           </div>
-          <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">% Published</p>
-            <p className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+          <div className="rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950">
+            <p className="text-sm text-slate-500 dark:text-slate-400">% Published</p>
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
               {summary.publishedPercent === null ? "—" : `${summary.publishedPercent}%`}
             </p>
           </div>

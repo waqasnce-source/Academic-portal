@@ -42,15 +42,15 @@ export default async function ManagementResearchProposalDetailPage(
       <div>
         <Link
           href="/management/research-proposals"
-          className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50"
+          className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50"
         >
           ← GSC/ASRB Research Proposals
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">{project.title}</h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">{project.title}</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           <Link
             href={`/management/students/${project.student.id}`}
-            className="underline hover:text-zinc-900 dark:hover:text-zinc-50"
+            className="underline hover:text-slate-900 dark:hover:text-slate-50"
           >
             {project.student.name} ({project.student.student_number})
           </Link>
@@ -59,7 +59,7 @@ export default async function ManagementResearchProposalDetailPage(
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Project</h2>
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Project</h2>
         <ResearchProjectEditForm
           projectId={project.id}
           studentId={project.student.id}
@@ -75,18 +75,18 @@ export default async function ManagementResearchProposalDetailPage(
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Proposal Versions ({proposals.length})</h2>
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Proposal Versions ({proposals.length})</h2>
 
         {proposals.map((p) => {
           const isLatest = p.id === latest?.id;
           return (
-            <div key={p.id} className="space-y-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+            <div key={p.id} className="space-y-4 rounded-lg border border-slate-200 p-4 dark:border-slate-800">
               <div className="flex items-center justify-between">
-                <p className="font-medium text-zinc-900 dark:text-zinc-50">
-                  Version {p.version} {isLatest && <span className="text-xs text-zinc-500 dark:text-zinc-400">(current)</span>}
+                <p className="font-medium text-slate-900 dark:text-slate-50">
+                  Version {p.version} {isLatest && <span className="text-xs text-slate-500 dark:text-slate-400">(current)</span>}
                 </p>
               </div>
-              {p.remarks && <p className="text-sm text-zinc-600 dark:text-zinc-400">{p.remarks}</p>}
+              {p.remarks && <p className="text-sm text-slate-600 dark:text-slate-400">{p.remarks}</p>}
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <StageSummary
@@ -107,19 +107,19 @@ export default async function ManagementResearchProposalDetailPage(
 
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                     Corrected Proposal Submitted
                   </p>
-                  <p className="mt-1 text-zinc-900 dark:text-zinc-50">{formatAcademicDate(p.corrected_submission_date)}</p>
+                  <p className="mt-1 text-slate-900 dark:text-slate-50">{formatAcademicDate(p.corrected_submission_date)}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Approved</p>
-                  <p className="mt-1 text-zinc-900 dark:text-zinc-50">{formatAcademicDate(p.approval_date)}</p>
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Approved</p>
+                  <p className="mt-1 text-slate-900 dark:text-slate-50">{formatAcademicDate(p.approval_date)}</p>
                 </div>
               </div>
 
               {isLatest && (
-                <div className="grid grid-cols-1 gap-4 border-t border-zinc-200 pt-4 dark:border-zinc-800 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 border-t border-slate-200 pt-4 dark:border-slate-800 lg:grid-cols-3">
                   <ProposalStageReviewForm
                     proposalId={p.id}
                     studentId={project.student.id}
@@ -153,24 +153,24 @@ export default async function ManagementResearchProposalDetailPage(
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Related Documents ({documents.length})</h2>
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Related Documents ({documents.length})</h2>
         {documents.length === 0 ? (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">No documents submitted yet.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">No documents submitted yet.</p>
         ) : (
           <ul className="space-y-2">
             {documents.map((d) => (
               <li
                 key={d.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-800"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm dark:border-slate-800"
               >
-                <span className="text-zinc-700 dark:text-zinc-300">
+                <span className="text-slate-700 dark:text-slate-300">
                   {d.requirement?.document_name ?? "Document"} (v{d.version}) — {formatAcademicDate(d.submitted_at)}
                 </span>
                 <span className="flex items-center gap-2">
                   <MilestoneStatusBadge status={d.status} />
                   <Link
                     href={`/management/documents/${d.id}`}
-                    className="text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                    className="text-slate-600 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
                   >
                     Review
                   </Link>
@@ -198,14 +198,14 @@ function StageSummary({
   reviewedBy: string | null;
 }) {
   return (
-    <div className="rounded-md bg-zinc-50 p-3 dark:bg-zinc-900">
+    <div className="rounded-md bg-slate-50 p-3 dark:bg-slate-900">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">{label}</p>
-        {status ? <MilestoneStatusBadge status={status as StudentMilestoneStatus} /> : <span className="text-xs text-zinc-400">—</span>}
+        <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
+        {status ? <MilestoneStatusBadge status={status as StudentMilestoneStatus} /> : <span className="text-xs text-slate-400">—</span>}
       </div>
-      <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">{formatAcademicDate(date)}</p>
-      {comments && <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{comments}</p>}
-      {reviewedBy && <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Reviewed by {reviewedBy}</p>}
+      <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{formatAcademicDate(date)}</p>
+      {comments && <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{comments}</p>}
+      {reviewedBy && <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Reviewed by {reviewedBy}</p>}
     </div>
   );
 }

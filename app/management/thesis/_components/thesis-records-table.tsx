@@ -23,32 +23,32 @@ export function ThesisRecordsTable({ records }: { records: ThesisRecordRow[] }) 
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-      <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
-        <thead className="bg-zinc-50 dark:bg-zinc-900">
+    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+      <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+        <thead className="bg-slate-50 dark:bg-slate-900">
           <tr>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Student</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Program</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Thesis Title</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Submitted</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Status</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Clearance</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-right font-medium text-zinc-500 dark:text-zinc-400">Actions</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Student</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Program</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Thesis Title</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Submitted</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Status</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Clearance</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-right font-medium text-slate-500 dark:text-slate-400">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+        <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
           {records.map((r) => (
             <tr key={r.id}>
-              <td className="whitespace-nowrap px-4 py-2.5 font-medium text-zinc-900 dark:text-zinc-50">
+              <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-900 dark:text-slate-50">
                 {r.student.profile?.full_name ?? r.student.student_number}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+              <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                 {r.student.program?.name ?? "—"}
               </td>
-              <td className="max-w-xs truncate px-4 py-2.5 text-zinc-700 dark:text-zinc-300">
+              <td className="max-w-xs truncate px-4 py-2.5 text-slate-700 dark:text-slate-300">
                 {r.thesis_title ?? "—"}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">{formatDate(r.submission_date)}</td>
+              <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">{formatDate(r.submission_date)}</td>
               <td className="whitespace-nowrap px-4 py-2.5">
                 {r.status ? (
                   <StatusBadge label={r.status.replace(/_/g, " ")} tone={STATUS_TONE[r.status] ?? "neutral"} />
@@ -56,11 +56,11 @@ export function ThesisRecordsTable({ records }: { records: ThesisRecordRow[] }) 
                   "—"
                 )}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">{r.clearance_status ?? "—"}</td>
+              <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">{r.clearance_status ?? "—"}</td>
               <td className="whitespace-nowrap px-4 py-2.5 text-right">
                 <Link
                   href={`/management/thesis/${r.id}`}
-                  className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                  className="text-sm text-slate-600 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
                 >
                   Manage
                 </Link>

@@ -45,6 +45,7 @@ export async function getStudentMilestoneContext(
 
 export interface MilestoneSyncUpdate {
   status: StudentMilestoneStatus;
+  planned_date?: string | null;
   due_date?: string | null;
   completed_date?: string | null;
   verified_date?: string | null;

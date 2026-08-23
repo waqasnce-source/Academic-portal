@@ -2,9 +2,9 @@ import Link from "next/link";
 import { buildDepartmentsHref, type DepartmentFilters } from "@/lib/management/departments";
 
 const buttonClasses =
-  "rounded-md border border-zinc-300 px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900";
+  "rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-900";
 const disabledClasses =
-  "rounded-md border border-zinc-200 px-3 py-1.5 text-sm text-zinc-300 dark:border-zinc-800 dark:text-zinc-700";
+  "rounded-md border border-slate-200 px-3 py-1.5 text-sm text-slate-300 dark:border-slate-800 dark:text-slate-700";
 
 export function DepartmentsPagination({
   filters,
@@ -16,8 +16,8 @@ export function DepartmentsPagination({
   totalPages: number;
 }) {
   return (
-    <div className="flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-800">
-      <p className="text-sm text-zinc-500 dark:text-zinc-400">
+    <div className="flex items-center justify-between border-t border-slate-200 pt-4 dark:border-slate-800">
+      <p className="text-sm text-slate-500 dark:text-slate-400">
         Page {page} of {totalPages}
       </p>
       <div className="flex gap-2">

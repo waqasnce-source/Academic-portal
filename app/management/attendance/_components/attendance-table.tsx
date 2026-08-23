@@ -35,34 +35,34 @@ export function AttendanceTable({
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-      <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
-        <thead className="bg-zinc-50 dark:bg-zinc-900">
+    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+      <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+        <thead className="bg-slate-50 dark:bg-slate-900">
           <tr>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Student</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Course</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Session</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Room</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Remarks</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Status</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Student</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Course</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Session</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Room</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Remarks</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Status</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+        <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
           {records.map((record) => (
             <tr key={record.id}>
-              <td className="whitespace-nowrap px-4 py-2.5 font-medium text-zinc-900 dark:text-zinc-50">
+              <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-900 dark:text-slate-50">
                 {record.enrollment.student.profile?.full_name ?? record.enrollment.student.name}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-700 dark:text-zinc-300">
+              <td className="whitespace-nowrap px-4 py-2.5 text-slate-700 dark:text-slate-300">
                 {record.course_session.course_offering.course.code} — {record.course_session.course_offering.course.name}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+              <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                 {formatDate(record.course_session.class_date)} {record.course_session.start_time}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+              <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                 {record.course_session.room ?? "—"}
               </td>
-              <td className="max-w-[220px] truncate px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+              <td className="max-w-[220px] truncate px-4 py-2.5 text-slate-500 dark:text-slate-400">
                 {record.remarks ?? "—"}
               </td>
               <td className="whitespace-nowrap px-4 py-2.5">

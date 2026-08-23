@@ -297,6 +297,29 @@ export interface CourseOption {
   credit_hours: number;
 }
 
+/** Case/whitespace-insensitive lookup for the "course already exists" duplicate check ahead of creating a new course — courses.code's uniqueness is DB-enforced regardless, but a pre-check lets the UI point straight at the existing course instead of surfacing a raw constraint error. */
+export async function findCourseByCode(code: string): Promise<{ id: string; code: string; name: string } | null> {
+  const trimmed = code.trim();
+  if (!trimmed) return null;
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("courses")
+    .select("id, code, name")
+    .ilike("code", trimmed)
+    .maybeSingle();
+  return data;
+}
+
+/** How many course_offerings reference this course — used to warn before editing a course that already has historical offerings (see the edit form). */
+export async function getCourseOfferingCount(courseId: string): Promise<number> {
+  const supabase = await createClient();
+  const { count } = await supabase
+    .from("course_offerings")
+    .select("id", { count: "exact", head: true })
+    .eq("course_id", courseId);
+  return count ?? 0;
+}
+
 /** Active courses for a select input — shared by the curriculum-requirement form and the course-offering form. */
 export async function getCourseOptions(): Promise<CourseOption[]> {
   const supabase = await createClient();

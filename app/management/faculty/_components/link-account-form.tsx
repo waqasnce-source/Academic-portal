@@ -19,7 +19,7 @@ export function LinkFacultyAccountForm({
 
   if (options.length === 0) {
     return (
-      <p className="text-sm text-zinc-500 dark:text-zinc-400">
+      <p className="text-sm text-slate-500 dark:text-slate-400">
         No unlinked faculty accounts are available to link. An account must already exist (role=faculty, not yet
         attached to another faculty record) before it can be linked here.
       </p>
@@ -29,14 +29,14 @@ export function LinkFacultyAccountForm({
   return (
     <form action={formAction} className="flex flex-wrap items-end gap-3">
       <div className="min-w-64">
-        <label htmlFor="profileId" className="block text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+        <label htmlFor="profileId" className="block text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
           Existing account
         </label>
         <select
           id="profileId"
           name="profileId"
           required
-          className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+          className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50"
         >
           <option value="">Select an account...</option>
           {options.map((o) => (
@@ -49,7 +49,7 @@ export function LinkFacultyAccountForm({
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
       >
         {pending ? "Linking..." : "Link Account"}
       </button>

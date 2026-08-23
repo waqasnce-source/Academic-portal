@@ -16,7 +16,7 @@ export function GradesRosterForm({ offeringId, roster }: { offeringId: string; r
   );
 
   if (roster.length === 0) {
-    return <p className="text-sm text-zinc-500 dark:text-zinc-400">No students enrolled in this offering yet.</p>;
+    return <p className="text-sm text-slate-500 dark:text-slate-400">No students enrolled in this offering yet.</p>;
   }
 
   return (
@@ -25,24 +25,24 @@ export function GradesRosterForm({ offeringId, roster }: { offeringId: string; r
           each row also needs its own independent Publish <form>, and forms cannot nest. */}
       <form id={GRADES_FORM_ID} action={formAction} />
 
-      <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-        <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
-          <thead className="bg-zinc-50 dark:bg-zinc-900">
+      <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+        <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+          <thead className="bg-slate-50 dark:bg-slate-900">
             <tr>
-              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Student</th>
-              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Marks</th>
-              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Grade</th>
-              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Grade Point</th>
-              <th className="px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Remarks</th>
-              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Publication</th>
+              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Student</th>
+              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Marks</th>
+              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Grade</th>
+              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Grade Point</th>
+              <th className="px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Remarks</th>
+              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Publication</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
             {roster.map((r) => (
               <tr key={r.enrollmentId}>
                 <td className="whitespace-nowrap px-4 py-2.5">
-                  <div className="font-medium text-zinc-900 dark:text-zinc-50">{r.student.name}</div>
-                  <div className="text-xs text-zinc-500 dark:text-zinc-400">{r.student.studentNumber}</div>
+                  <div className="font-medium text-slate-900 dark:text-slate-50">{r.student.name}</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400">{r.student.studentNumber}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2.5">
                   <input
@@ -93,13 +93,13 @@ export function GradesRosterForm({ offeringId, roster }: { offeringId: string; r
                     <form action={publishResultAction.bind(null, offeringId, r.result.id, r.student.id)}>
                       <button
                         type="submit"
-                        className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                        className="text-sm text-slate-600 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
                       >
                         Publish
                       </button>
                     </form>
                   ) : (
-                    <span className="text-xs text-zinc-400 dark:text-zinc-600">Not graded yet</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-600">Not graded yet</span>
                   )}
                   {r.result?.published_at && (
                     <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
@@ -119,7 +119,7 @@ export function GradesRosterForm({ offeringId, roster }: { offeringId: string; r
         type="submit"
         form={GRADES_FORM_ID}
         disabled={pending}
-        className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
       >
         {pending ? "Saving..." : "Save Grades"}
       </button>

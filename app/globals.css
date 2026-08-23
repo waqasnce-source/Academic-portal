@@ -1,8 +1,42 @@
 @import "tailwindcss";
 
+/*
+ * Institutional palette, drawn from the NCEG crest (public/nceg-logo.jpg):
+ * deep navy + gold. Registered as real Tailwind color scales via @theme,
+ * so every component can use ordinary utilities (bg-brand-800, text-gold-600,
+ * dark:bg-brand-600, ...) — this is Tailwind v4's own theming mechanism,
+ * not a second styling system. Fixed values (not dark-mode adaptive), so no
+ * :root indirection is needed the way --background/--foreground use below.
+ */
+@theme {
+  --color-brand-50: #eef3fb;
+  --color-brand-100: #dbe6f6;
+  --color-brand-200: #b7cceb;
+  --color-brand-300: #8babd9;
+  --color-brand-400: #5c85c2;
+  --color-brand-500: #3c66a3;
+  --color-brand-600: #2c5085;
+  --color-brand-700: #223f6b;
+  --color-brand-800: #172c4c;
+  --color-brand-900: #0f1f38;
+  --color-brand-950: #081326;
+
+  --color-gold-50: #fdf7e9;
+  --color-gold-100: #faecc7;
+  --color-gold-200: #f4d98e;
+  --color-gold-300: #edc158;
+  --color-gold-400: #dfa62e;
+  --color-gold-500: #c2911f;
+  --color-gold-600: #a67518;
+  --color-gold-700: #855b16;
+  --color-gold-800: #664617;
+  --color-gold-900: #4d3616;
+  --color-gold-950: #2c1e0c;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f6f8fb;
+  --foreground: #111827;
 }
 
 @theme inline {
@@ -14,8 +48,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #060a14;
+    --foreground: #e8ecf3;
   }
 }
 

@@ -12,11 +12,11 @@ export default async function NewStudentPage() {
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/management/students" className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50">
+        <Link href="/management/students" className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50">
           ← Students
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Add Student</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">Add Student</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Creates the academic record only — no login account is created or linked. Account provisioning is not
           available yet (see Phase 6 report).
         </p>

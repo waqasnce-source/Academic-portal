@@ -5,7 +5,7 @@ import { toggleFacultyStatusAction } from "../actions";
 const STATUS_BADGE_CLASSES: Record<FacultyStatus, string> = {
   active:
     "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400",
-  inactive: "bg-zinc-100 text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400",
+  inactive: "bg-slate-100 text-slate-600 dark:bg-slate-900 dark:text-slate-400",
 };
 
 function StatusBadge({ status }: { status: FacultyStatus }) {
@@ -36,11 +36,11 @@ export function FacultyTable({
 }) {
   if (faculty.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-zinc-300 px-4 py-12 text-center dark:border-zinc-700">
-        <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+      <div className="rounded-lg border border-dashed border-slate-300 px-4 py-12 text-center dark:border-slate-700">
+        <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
           No faculty found
         </p>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           {hasActiveFilters
             ? "No faculty records match the current filters."
             : "No faculty records exist yet."}
@@ -48,7 +48,7 @@ export function FacultyTable({
         {hasActiveFilters && (
           <Link
             href="/management/faculty"
-            className="mt-4 inline-block text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            className="mt-4 inline-block text-sm text-slate-600 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
           >
             Clear filters
           </Link>
@@ -58,55 +58,57 @@ export function FacultyTable({
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-      <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
-        <thead className="bg-zinc-50 dark:bg-zinc-900">
+    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+      <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+        <thead className="bg-slate-50 dark:bg-slate-900">
           <tr>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">
               Employee #
             </th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">
               Name
             </th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">
               Email
             </th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">
               Designation
             </th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">
               Department
             </th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">
               Joined
             </th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">
               Status
             </th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-right font-medium text-zinc-500 dark:text-zinc-400">
+            <th className="whitespace-nowrap px-4 py-2.5 text-right font-medium text-slate-500 dark:text-slate-400">
               Actions
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+        <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
           {faculty.map((member) => (
             <tr key={member.id}>
-              <td className="whitespace-nowrap px-4 py-2.5 font-medium text-zinc-900 dark:text-zinc-50">
+              <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-900 dark:text-slate-50">
                 {member.employee_number ?? "—"}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-700 dark:text-zinc-300">
-                {member.profile?.full_name ?? member.name}
+              <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-900 dark:text-slate-50">
+                <Link href={`/management/faculty/${member.id}`} className="hover:underline">
+                  {member.profile?.full_name ?? member.name}
+                </Link>
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+              <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                 {member.profile?.email ?? member.email ?? "—"}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-700 dark:text-zinc-300">
+              <td className="whitespace-nowrap px-4 py-2.5 text-slate-700 dark:text-slate-300">
                 {member.designation}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+              <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                 {member.department?.name ?? "Not assigned"}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+              <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                 {formatJoinedDate(member.joined_date)}
               </td>
               <td className="whitespace-nowrap px-4 py-2.5">
@@ -116,7 +118,7 @@ export function FacultyTable({
                 <div className="flex justify-end gap-3">
                   <Link
                     href={`/management/faculty/${member.id}/edit`}
-                    className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                    className="text-sm text-slate-600 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
                   >
                     Edit
                   </Link>
@@ -129,7 +131,7 @@ export function FacultyTable({
                   >
                     <button
                       type="submit"
-                      className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                      className="text-sm text-slate-600 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
                     >
                       {member.status === "active" ? "Deactivate" : "Activate"}
                     </button>

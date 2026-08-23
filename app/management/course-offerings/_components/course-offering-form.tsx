@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 import { fieldClasses, labelClasses } from "@/app/management/_components/form-styles";
 import { OFFERING_STATUSES } from "@/lib/management/status-enums";
 import type { CourseOfferingFormState } from "../actions";
@@ -40,11 +40,20 @@ export function CourseOfferingForm({
   submitLabel: string;
 }) {
   const [state, formAction, pending] = useActionState(action, undefined);
+  const statusRef = useRef<HTMLSelectElement>(null);
 
   return (
     <form
       action={formAction}
-      className="max-w-lg space-y-5 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950"
+      onSubmit={(e) => {
+        const nextStatus = statusRef.current?.value;
+        if (defaultValues && nextStatus === "cancelled" && defaultValues.status !== "cancelled") {
+          if (!confirm("Cancel this course offering? It will be excluded from official reporting figures and new enrollments.")) {
+            e.preventDefault();
+          }
+        }
+      }}
+      className="max-w-lg space-y-5 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"
     >
       <div className="space-y-1">
         <label htmlFor="course_id" className={labelClasses}>
@@ -67,7 +76,7 @@ export function CourseOfferingForm({
           ))}
         </select>
         {options.courses.length === 0 && (
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">No active courses exist yet.</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">No active courses exist yet.</p>
         )}
       </div>
 
@@ -92,7 +101,7 @@ export function CourseOfferingForm({
           ))}
         </select>
         {options.semesters.length === 0 && (
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             No semesters exist yet — create one under Semester Management first.
           </p>
         )}
@@ -133,32 +142,44 @@ export function CourseOfferingForm({
         <label htmlFor="status" className={labelClasses}>
           Status
         </label>
-        <select id="status" name="status" defaultValue={defaultValues?.status ?? "planned"} className={fieldClasses}>
+        <select id="status" name="status" ref={statusRef} defaultValue={defaultValues?.status ?? "planned"} className={fieldClasses}>
           {OFFERING_STATUSES.map((s) => (
             <option key={s} value={s}>
               {STATUS_LABELS[s]}
             </option>
           ))}
         </select>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs text-slate-500 dark:text-slate-400">
           Only &lsquo;Planned&rsquo;/&lsquo;Open&rsquo; offerings are offered for new enrollment; &lsquo;Cancelled&rsquo;
           offerings are excluded from the enrollment form entirely.
         </p>
       </div>
 
-      {state?.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
+      {state?.error && (
+        <p
+          className={`text-sm ${
+            state.needsConfirmation
+              ? "rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-300"
+              : "text-red-600 dark:text-red-400"
+          }`}
+        >
+          {state.error}
+        </p>
+      )}
 
-      <div className="flex items-center gap-4 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+      <input type="hidden" name="confirmed" value={state?.needsConfirmation ? "true" : "false"} />
+
+      <div className="flex items-center gap-4 border-t border-slate-200 pt-4 dark:border-slate-800">
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
         >
-          {pending ? "Saving..." : submitLabel}
+          {pending ? "Saving..." : state?.needsConfirmation ? "Create Anyway" : submitLabel}
         </button>
         <Link
           href="/management/course-offerings"
-          className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50"
+          className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50"
         >
           Cancel
         </Link>

@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Academic Portal",
-  description: "Student, faculty, and management portal.",
+  title: "NCEG Academic Portal",
+  description: "Student, faculty, and management portal for the National Centre of Excellence in Geology, University of Peshawar.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

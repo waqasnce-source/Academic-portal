@@ -230,6 +230,19 @@ export async function getFaculty(
 }
 
 /**
+ * Single-row counterpart to getFaculty()'s list query, using the exact
+ * same FACULTY_SELECT (profile/department joined, nullable-safe) — for
+ * the Management faculty hub header. Not a second shape/select for the
+ * same table.
+ */
+export async function getFacultyProfile(id: string): Promise<FacultyRow | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("faculty").select(FACULTY_SELECT).eq("id", id).maybeSingle();
+  if (error || !data) return null;
+  return data as unknown as FacultyRow;
+}
+
+/**
  * Department options for the filter dropdown. `departments` has a
  * `using (true)` select policy for any authenticated user — same plain
  * catalog read as the students module and the rest of the app.

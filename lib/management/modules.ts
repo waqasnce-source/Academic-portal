@@ -53,6 +53,16 @@ export const MANAGEMENT_MODULES: ManagementModule[] = [
     description: "Configure degree/specialization requirements — specific courses and category credit-hour targets.",
   },
   {
+    slug: "catalogue-notes",
+    label: "Data Issues",
+    description: "Source-catalogue anomalies flagged for review — conflicting codes, unresolved rules, and similar.",
+  },
+  {
+    slug: "academic-sessions",
+    label: "Academic Sessions",
+    description: "Session-wise view of teaching activity — session → semester → discipline → course → faculty → students.",
+  },
+  {
     slug: "semesters",
     label: "Semester Management",
     description: "Manage academic semesters.",
@@ -62,6 +72,11 @@ export const MANAGEMENT_MODULES: ManagementModule[] = [
     label: "Course Offerings",
     description:
       "Manage course offerings and faculty assignments per semester.",
+  },
+  {
+    slug: "bulk-import",
+    label: "Bulk Import",
+    description: "Import Course Catalogue, Course Offerings, Students, or Enrollments from Excel/CSV.",
   },
   {
     slug: "enrollments",
@@ -148,3 +163,81 @@ export const MANAGEMENT_MODULES: ManagementModule[] = [
 export function getManagementModule(slug: string): ManagementModule | undefined {
   return MANAGEMENT_MODULES.find((m) => m.slug === slug);
 }
+
+export interface ManagementNavItem {
+  slug: string;
+  label: string;
+}
+
+export interface ManagementNavGroup {
+  label: string;
+  items: ManagementNavItem[];
+}
+
+/**
+ * Grouped sidebar navigation — separate from MANAGEMENT_MODULES (which
+ * stays a flat list, still used by getManagementModule()/the [module]
+ * fallback route). This is presentation-only: it reorganizes the SAME
+ * routes into a workflow-oriented hierarchy so a management user isn't
+ * expected to already know the internal module structure.
+ *
+ * Deliberately minimal — 11 items, not 29. Two labels are workflow
+ * concepts rather than literal route names: "Programs & Curriculum"
+ * points at Programs (curriculum-requirements/specializations/departments
+ * are reached contextually FROM the Programs page, not given their own
+ * sidebar slot); "Research & Thesis" points at Research Proposals
+ * (supervisor-assignments/thesis/extensions are reached from there and
+ * from a student's own Academic Progress page, per the explicit
+ * instruction that "Student -> Academic Progress -> Supervisor" should
+ * replace "Sidebar -> Supervisor Assignments" as the normal path).
+ *
+ * Everything NOT listed here keeps its route and is still reachable —
+ * see each page's own contextual links (semester hub, course detail,
+ * Academic Progress detail, Programs, Results, Notices) rather than a
+ * flat sidebar entry: semesters, course-offerings, enrollments,
+ * bulk-import, milestones, curriculum-requirements, grading-scale,
+ * supervisor-assignments, extensions, thesis, results, attendance,
+ * timetable, departments, specializations, catalogue-notes, notifications.
+ */
+export const MANAGEMENT_NAV_GROUPS: ManagementNavGroup[] = [
+  {
+    label: "Academics",
+    items: [{ slug: "academic-sessions", label: "Academic Sessions" }],
+  },
+  {
+    label: "People",
+    items: [
+      { slug: "students", label: "Students" },
+      { slug: "faculty", label: "Faculty" },
+    ],
+  },
+  {
+    label: "Programs",
+    items: [
+      { slug: "programs", label: "Programs & Curriculum" },
+      { slug: "courses", label: "Courses" },
+    ],
+  },
+  {
+    label: "Student Progress",
+    items: [
+      { slug: "academic-progress", label: "Academic Progress" },
+      { slug: "research-proposals", label: "Research & Thesis" },
+    ],
+  },
+  {
+    label: "Administration",
+    items: [
+      { slug: "reports", label: "Reports" },
+      { slug: "documents", label: "Documents" },
+      { slug: "notices", label: "Notices" },
+    ],
+  },
+  {
+    label: "System",
+    items: [
+      { slug: "settings", label: "Settings" },
+      { slug: "users", label: "Users & Roles" },
+    ],
+  },
+];

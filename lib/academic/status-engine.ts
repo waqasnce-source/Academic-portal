@@ -43,6 +43,8 @@ export interface StatusEngineResult {
   completedMilestones: EffectiveMilestone[];
   overdueMilestones: EffectiveMilestone[];
   upcomingDeadlines: EffectiveMilestone[];
+  /** Every required milestone for this student's track, in sequence order — the denominator progressPercentage/completedMilestones are computed against. Exposed directly rather than left for callers to reconstruct from the other subsets (completed/overdue/upcoming don't partition the full set — e.g. an in-progress required milestone with no due_date falls in none of them). */
+  requiredMilestones: EffectiveMilestone[];
   extensionStatus: {
     active: boolean;
     extension: ExtensionApplicationRow | null;
@@ -158,6 +160,7 @@ export function computeAcademicStatus(
     completedMilestones,
     overdueMilestones,
     upcomingDeadlines,
+    requiredMilestones,
     extensionStatus: {
       active: activeExtension !== null,
       extension: activeExtension,
@@ -165,6 +168,76 @@ export function computeAcademicStatus(
     statusLabel,
     requiresAdministrativeAction,
   };
+}
+
+/**
+ * The 7-value lifecycle-stage vocabulary the Management Academic Progress
+ * views present ("where is this student in the big picture" — coarser
+ * than currentMilestone.category, which is the raw milestone_templates
+ * taxonomy, e.g. "Research Proposal", "Examination"). "Needs Review" is a
+ * deliberate honest fallback, not an error state — used whenever a
+ * milestone_code isn't in the map below (e.g. a newly-added template)
+ * rather than silently guessing a stage that might be wrong.
+ */
+export const OVERALL_STAGES = [
+  "Admission",
+  "Coursework",
+  "Proposal",
+  "Research",
+  "Thesis",
+  "Defense",
+  "Completion",
+  "Needs Review",
+] as const;
+export type OverallStage = (typeof OVERALL_STAGES)[number];
+
+/**
+ * milestone_code -> stage bucket, built directly from the actual seeded
+ * milestone_templates rows (inspected live, not assumed) — every code
+ * that exists across the MS/MPhil and PhD (both entry-basis forks)
+ * template sets is mapped explicitly. EXTENSION_APPLICATION is
+ * deliberately absent: it's a non-required milestone (required: false),
+ * so computeAcademicStatus() never selects it as currentMilestone in the
+ * first place — an extension can happen during any stage, so it must
+ * never itself determine one.
+ */
+const STAGE_BY_MILESTONE_CODE: Record<string, OverallStage> = {
+  ADMISSION_APPROVAL: "Admission",
+  SUPERVISOR_APPROVAL: "Admission",
+  CONFIRMATION_OF_ADMISSION: "Admission",
+  COURSE_WORK: "Coursework",
+  COURSEWORK: "Coursework",
+  COURSE_WORK_APPROVAL: "Coursework",
+  COMPREHENSIVE_EXAMINATION: "Coursework",
+  COMPREHENSIVE_EXAMINATION_SECOND: "Coursework",
+  GSC_PRESENTATION: "Proposal",
+  RESEARCH_TOPIC_PROPOSAL: "Proposal",
+  ASRB_PRESENTATION: "Proposal",
+  CORRECTED_PROPOSAL_SUBMISSION: "Proposal",
+  THESIS_RESEARCH_PERIOD: "Research",
+  RESEARCH_PERIOD: "Research",
+  THESIS_SUBMISSION: "Thesis",
+  THESIS_REVIEW_EXAMINATION: "Thesis",
+  FOREIGN_NATIONAL_REVIEWER_PROCESS: "Thesis",
+  THESIS_CORRECTIONS: "Thesis",
+  VIVA_VOCE: "Defense",
+  DEFENCE_VIVA_VOCE: "Defense",
+  RESULT_DECLARATION: "Completion",
+  FINAL_TRANSCRIPT: "Completion",
+};
+
+/**
+ * Derives the coarse lifecycle stage from the same computed result
+ * computeAcademicStatus() already produced — never a second computation,
+ * never inferred from admission year. A student with no currentMilestone
+ * (every required milestone terminal-good) is "Completion"; anything
+ * whose milestone_code isn't in the map is "Needs Review" rather than a
+ * guess.
+ */
+export function deriveOverallStage(result: Pick<StatusEngineResult, "currentMilestone" | "statusLabel">): OverallStage {
+  if (result.statusLabel === "COMPLETED") return "Completion";
+  if (!result.currentMilestone) return "Needs Review";
+  return STAGE_BY_MILESTONE_CODE[result.currentMilestone.milestone_code] ?? "Needs Review";
 }
 
 /**

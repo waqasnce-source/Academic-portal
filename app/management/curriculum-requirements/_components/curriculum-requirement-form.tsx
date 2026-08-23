@@ -57,7 +57,7 @@ export function CurriculumRequirementForm({
   return (
     <form
       action={formAction}
-      className="max-w-xl space-y-5 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950"
+      className="max-w-xl space-y-5 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"
     >
       <div className="space-y-1">
         <label htmlFor="program_id" className={labelClasses}>
@@ -122,31 +122,31 @@ export function CurriculumRequirementForm({
         </select>
       </div>
 
-      <fieldset className="space-y-3 rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
-        <legend className="px-1 text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+      <fieldset className="space-y-3 rounded-md border border-slate-200 p-4 dark:border-slate-800">
+        <legend className="px-1 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
           What does this requirement refer to?
         </legend>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:gap-6">
-          <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+          <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
             <input
               type="radio"
               name="requirement_mode"
               value="course"
               checked={mode === "course"}
               onChange={() => setMode("course")}
-              className="h-4 w-4 border-zinc-300 dark:border-zinc-700"
+              className="h-4 w-4 border-slate-300 dark:border-slate-700"
             />
             Specific course requirement
           </label>
-          <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+          <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
             <input
               type="radio"
               name="requirement_mode"
               value="category"
               checked={mode === "category"}
               onChange={() => setMode("category")}
-              className="h-4 w-4 border-zinc-300 dark:border-zinc-700"
+              className="h-4 w-4 border-slate-300 dark:border-slate-700"
             />
             Category credit-hour target
           </label>
@@ -173,7 +173,7 @@ export function CurriculumRequirementForm({
                 </option>
               ))}
             </select>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               This specific course is the requirement — its credit hours come from the course catalog, not a
               separately entered number.
             </p>
@@ -193,7 +193,7 @@ export function CurriculumRequirementForm({
               required
               className={fieldClasses}
             />
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               E.g. &ldquo;6 CH of Elective&rdquo; — satisfied by any combination of courses in this category, not
               one specific course.
             </p>
@@ -233,7 +233,7 @@ export function CurriculumRequirementForm({
               </option>
             ))}
           </select>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">Only meaningful for PhD programs.</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Only meaningful for PhD programs.</p>
         </div>
       </div>
 
@@ -243,7 +243,7 @@ export function CurriculumRequirementForm({
           name="is_mandatory"
           type="checkbox"
           defaultChecked={defaultValues?.is_mandatory ?? true}
-          className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-700"
+          className="h-4 w-4 rounded border-slate-300 dark:border-slate-700"
         />
         <label htmlFor="is_mandatory" className={labelClasses}>
           Mandatory
@@ -252,17 +252,17 @@ export function CurriculumRequirementForm({
 
       {state?.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
 
-      <div className="flex items-center gap-4 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+      <div className="flex items-center gap-4 border-t border-slate-200 pt-4 dark:border-slate-800">
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
         >
           {pending ? "Saving..." : submitLabel}
         </button>
         <Link
           href="/management/curriculum-requirements"
-          className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50"
+          className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50"
         >
           Cancel
         </Link>

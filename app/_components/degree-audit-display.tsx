@@ -31,18 +31,18 @@ export function CurriculumStatusBadge({ status }: { status: CurriculumStatus }) 
 
 export function GpaCard({ title, gpa }: { title: string; gpa: GpaFigure | null }) {
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">{title}</p>
+    <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
+      <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{title}</p>
       {!gpa || gpa.gpa === null ? (
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           {!gpa
             ? "No semesters enrolled yet."
             : "No published, uniquely-attempted, grade-point-resolvable courses yet."}
         </p>
       ) : (
-        <p className="mt-1 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <p className="mt-1 text-xl font-semibold text-slate-900 dark:text-slate-50">
           {gpa.gpa.toFixed(2)}{" "}
-          <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">({gpa.creditHoursCounted} CH)</span>
+          <span className="text-xs font-normal text-slate-500 dark:text-slate-400">({gpa.creditHoursCounted} CH)</span>
         </p>
       )}
       {gpa && !gpa.gradingScaleConfigured && (
@@ -58,7 +58,7 @@ export function GpaCard({ title, gpa }: { title: string; gpa: GpaFigure | null }
         </p>
       )}
       {gpa && gpa.coursesExcludedNoGradePoint.length > 0 && (
-        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
           {gpa.coursesExcludedNoGradePoint.length} course(s) excluded — no resolvable grade point.
         </p>
       )}
@@ -68,30 +68,30 @@ export function GpaCard({ title, gpa }: { title: string; gpa: GpaFigure | null }
 
 export function CategoryProgressTable({ byCategory }: { byCategory: CategoryProgress[] }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-      <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
-        <thead className="bg-zinc-50 dark:bg-zinc-900">
+    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+      <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+        <thead className="bg-slate-50 dark:bg-slate-900">
           <tr>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Category</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-right font-medium text-zinc-500 dark:text-zinc-400">Completed CH</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-right font-medium text-zinc-500 dark:text-zinc-400">Required CH</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Mandatory Courses</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Status</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Category</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-right font-medium text-slate-500 dark:text-slate-400">Completed CH</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-right font-medium text-slate-500 dark:text-slate-400">Required CH</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Mandatory Courses</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Status</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+        <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
           {byCategory.map((c) => (
             <tr key={c.category}>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-700 dark:text-zinc-300 capitalize">
+              <td className="whitespace-nowrap px-4 py-2.5 text-slate-700 dark:text-slate-300 capitalize">
                 {c.category.replace(/_/g, " ")}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-right text-zinc-500 dark:text-zinc-400">
+              <td className="whitespace-nowrap px-4 py-2.5 text-right text-slate-500 dark:text-slate-400">
                 {c.completedCreditHours}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-right text-zinc-500 dark:text-zinc-400">
+              <td className="whitespace-nowrap px-4 py-2.5 text-right text-slate-500 dark:text-slate-400">
                 {c.requiredCreditHours ?? "—"}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+              <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                 {c.mandatoryCourses.length > 0
                   ? `${c.mandatoryCourses.filter((m) => m.completed).length} / ${c.mandatoryCourses.length} completed`
                   : "—"}

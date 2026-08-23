@@ -36,6 +36,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Claude Code local session/tool config — contains machine-local permission
+# grants and has previously held plaintext test credentials in
+# settings.local.json; never appropriate to share via the repo.
+.claude/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -21,11 +21,11 @@ export default async function StudentPage() {
     return (
       <div className="space-y-8">
         <NotificationsWidget notifications={recentNotifications} revalidatePath="/student" />
-        <div className="rounded-lg border border-dashed border-zinc-300 px-4 py-12 text-center dark:border-zinc-700">
-          <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <div className="rounded-lg border border-dashed border-slate-300 px-4 py-12 text-center dark:border-slate-700">
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
             No academic record found
           </p>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Your account has a student profile, but no student record has been provisioned yet.
             Contact Management if you believe this is an error.
           </p>
@@ -64,26 +64,26 @@ export default async function StudentPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
           Welcome, {profile.full_name}
         </h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">Student dashboard</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Student dashboard</p>
       </div>
 
       <NotificationsWidget notifications={recentNotifications} revalidatePath="/student" />
 
       {!summary || !status ? (
-        <div className="rounded-lg border border-dashed border-zinc-300 px-4 py-12 text-center dark:border-zinc-700">
-          <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <div className="rounded-lg border border-dashed border-slate-300 px-4 py-12 text-center dark:border-slate-700">
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
             Academic progress is not available yet
           </p>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Your program assignment may not be complete. Contact Management if this persists.
           </p>
         </div>
       ) : (
         <>
-          <section className="grid grid-cols-1 gap-4 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950 sm:grid-cols-2 lg:grid-cols-3">
+          <section className="grid grid-cols-1 gap-4 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950 sm:grid-cols-2 lg:grid-cols-3">
             <Field label="Student ID" value={summary.student_number} />
             <Field label="Program" value={summary.program?.name ?? "—"} />
             <Field label="Discipline" value={summary.program?.department.name ?? "—"} />
@@ -95,13 +95,13 @@ export default async function StudentPage() {
             />
           </section>
 
-          <section className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
+          <section className="rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   Current Academic Stage
                 </p>
-                <p className="mt-1 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+                <p className="mt-1 text-xl font-semibold text-slate-900 dark:text-slate-50">
                   {status.currentStage ?? (status.statusLabel === "COMPLETED" ? "Completed" : "—")}
                 </p>
               </div>
@@ -110,34 +110,34 @@ export default async function StudentPage() {
 
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   Current Milestone
                 </p>
-                <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
+                <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">
                   {status.currentMilestone?.title ?? "None — all required milestones complete"}
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   Next Milestone
                 </p>
-                <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
+                <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">
                   {status.nextMilestone?.title ?? "—"}
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   Deadline
                 </p>
-                <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
+                <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">
                   {deadline ? formatAcademicDate(deadline) : "No deadline set"}
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   Extension Status
                 </p>
-                <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
+                <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">
                   {status.extensionStatus.active
                     ? `Active${
                         status.extensionStatus.extension?.requested_to
@@ -160,22 +160,22 @@ export default async function StudentPage() {
 
             <Link
               href="/student/progress"
-              className="mt-6 inline-block rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="mt-6 inline-block rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-600 dark:hover:bg-brand-500"
             >
               View full academic progress
             </Link>
           </section>
 
           {degreeAudit && (
-            <section className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   Coursework / Degree Progress
                 </p>
                 <CurriculumStatusBadge status={degreeAudit.curriculumStatus} />
               </div>
               {degreeAudit.curriculumStatus === "not_configured" ? (
-                <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                   Curriculum requirements have not been configured for your program yet.
                 </p>
               ) : degreeAudit.curriculumStatus === "partially_configured" ? (
@@ -184,9 +184,9 @@ export default async function StudentPage() {
                 </p>
               ) : (
                 <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-                  <div className="rounded-md border border-zinc-200 px-3 py-2 dark:border-zinc-800">
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">CH Completed</p>
-                    <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+                  <div className="rounded-md border border-slate-200 px-3 py-2 dark:border-slate-800">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">CH Completed</p>
+                    <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">
                       {degreeAudit.totalCompletedCreditHours}
                     </p>
                   </div>
@@ -195,15 +195,15 @@ export default async function StudentPage() {
                     count={degreeAudit.missingMandatoryCourses.length}
                     tone="danger"
                   />
-                  <div className="rounded-md border border-zinc-200 px-3 py-2 dark:border-zinc-800">
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">CGPA</p>
-                    <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+                  <div className="rounded-md border border-slate-200 px-3 py-2 dark:border-slate-800">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">CGPA</p>
+                    <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">
                       {degreeAudit.cgpa.gpa !== null ? degreeAudit.cgpa.gpa.toFixed(2) : "—"}
                     </p>
                   </div>
-                  <div className="rounded-md border border-zinc-200 px-3 py-2 dark:border-zinc-800">
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">Current Semester GPA</p>
-                    <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+                  <div className="rounded-md border border-slate-200 px-3 py-2 dark:border-slate-800">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Current Semester GPA</p>
+                    <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">
                       {degreeAudit.currentSemesterGpa?.gpa !== null && degreeAudit.currentSemesterGpa?.gpa !== undefined
                         ? degreeAudit.currentSemesterGpa.gpa.toFixed(2)
                         : "—"}
@@ -214,13 +214,13 @@ export default async function StudentPage() {
               <div className="mt-4 flex flex-wrap gap-4">
                 <Link
                   href="/student/degree-progress"
-                  className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                  className="text-sm text-slate-600 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
                 >
                   View full degree progress
                 </Link>
                 <Link
                   href="/student/courses"
-                  className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                  className="text-sm text-slate-600 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
                 >
                   View my courses
                 </Link>
@@ -229,29 +229,29 @@ export default async function StudentPage() {
           )}
 
           {researchProject && (
-            <section className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
-              <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                 Research Proposal
               </p>
-              <p className="mt-1 text-sm font-medium text-zinc-900 dark:text-zinc-50">{researchProject.title}</p>
+              <p className="mt-1 text-sm font-medium text-slate-900 dark:text-slate-50">{researchProject.title}</p>
               {latestProposal && (
                 <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <div className="flex items-center justify-between">
-                      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">GSC</p>
+                      <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">GSC</p>
                       {latestProposal.gsc_status && <MilestoneStatusBadge status={latestProposal.gsc_status} />}
                     </div>
                     {latestProposal.gsc_comments && (
-                      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{latestProposal.gsc_comments}</p>
+                      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{latestProposal.gsc_comments}</p>
                     )}
                   </div>
                   <div>
                     <div className="flex items-center justify-between">
-                      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">ASRB</p>
+                      <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">ASRB</p>
                       {latestProposal.asrb_status && <MilestoneStatusBadge status={latestProposal.asrb_status} />}
                     </div>
                     {latestProposal.asrb_comments && (
-                      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{latestProposal.asrb_comments}</p>
+                      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{latestProposal.asrb_comments}</p>
                     )}
                   </div>
                 </div>
@@ -260,29 +260,29 @@ export default async function StudentPage() {
           )}
 
           {thesis && (
-            <section className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
-              <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            <section className="rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                 Thesis &amp; Viva
               </p>
-              <p className="mt-1 text-sm font-medium text-zinc-900 dark:text-zinc-50">
+              <p className="mt-1 text-sm font-medium text-slate-900 dark:text-slate-50">
                 {thesis.thesis_title ?? "Untitled thesis"}
               </p>
               <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                     Thesis Status
                   </p>
-                  <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
+                  <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">
                     {thesis.status ? thesis.status.replace(/_/g, " ") : "—"}
                     {thesis.submission_date ? ` · Submitted ${formatAcademicDate(thesis.submission_date)}` : ""}
                   </p>
                 </div>
                 {viva && (
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                       Viva Voce
                     </p>
-                    <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
+                    <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">
                       {viva.status ?? "—"}
                       {viva.scheduled_date ? ` · Scheduled ${formatAcademicDate(viva.scheduled_date)}` : ""}
                       {viva.result ? ` · Result: ${viva.result}` : ""}
@@ -323,8 +323,8 @@ export default async function StudentPage() {
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">{label}</p>
-      <p className="mt-1 text-sm text-zinc-900 dark:text-zinc-50">{value}</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="mt-1 text-sm text-slate-900 dark:text-slate-50">{value}</p>
     </div>
   );
 }
@@ -332,14 +332,14 @@ function Field({ label, value }: { label: string; value: string }) {
 function SummaryCount({ label, count, tone }: { label: string; count: number; tone: "danger" | "warning" }) {
   const toneClasses =
     count === 0
-      ? "border-zinc-200 dark:border-zinc-800"
+      ? "border-slate-200 dark:border-slate-800"
       : tone === "danger"
         ? "border-red-200 dark:border-red-900"
         : "border-amber-200 dark:border-amber-900";
   return (
     <div className={`rounded-md border px-3 py-2 ${toneClasses}`}>
-      <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
-      <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">{count}</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">{count}</p>
     </div>
   );
 }

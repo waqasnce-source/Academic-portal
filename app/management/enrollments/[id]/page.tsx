@@ -21,16 +21,16 @@ export default async function ManagementEnrollmentDetailPage(props: PageProps<"/
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/management/enrollments" className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50">
+        <Link href="/management/enrollments" className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50">
           ← Enrollments
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
           {enrollment.student.profile?.full_name ?? enrollment.student.name}
         </h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">{enrollment.student.student_number}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{enrollment.student.student_number}</p>
       </div>
 
-      <section className="grid grid-cols-1 gap-4 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950 sm:grid-cols-2">
+      <section className="grid grid-cols-1 gap-4 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950 sm:grid-cols-2">
         <Field label="Course" value={`${enrollment.course_offering.course.code} — ${enrollment.course_offering.course.name}`} />
         <Field
           label="Semester"
@@ -42,7 +42,7 @@ export default async function ManagementEnrollmentDetailPage(props: PageProps<"/
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Status</h2>
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Status</h2>
         <EnrollmentStatusForm enrollmentId={enrollment.id} currentStatus={enrollment.status} />
       </section>
     </div>
@@ -52,8 +52,8 @@ export default async function ManagementEnrollmentDetailPage(props: PageProps<"/
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">{label}</p>
-      <p className="mt-1 text-sm text-zinc-900 dark:text-zinc-50">{value}</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="mt-1 text-sm text-slate-900 dark:text-slate-50">{value}</p>
     </div>
   );
 }

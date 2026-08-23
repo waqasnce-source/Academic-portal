@@ -30,7 +30,7 @@ export function SpecializationForm({
   return (
     <form
       action={formAction}
-      className="max-w-lg space-y-5 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950"
+      className="max-w-lg space-y-5 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"
     >
       <div className="space-y-1">
         <label htmlFor="department_id" className={labelClasses}>
@@ -103,7 +103,7 @@ export function SpecializationForm({
           name="is_active"
           type="checkbox"
           defaultChecked={defaultValues?.is_active ?? true}
-          className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-700"
+          className="h-4 w-4 rounded border-slate-300 dark:border-slate-700"
         />
         <label htmlFor="is_active" className={labelClasses}>
           Active
@@ -114,17 +114,17 @@ export function SpecializationForm({
         <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>
       )}
 
-      <div className="flex items-center gap-4 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+      <div className="flex items-center gap-4 border-t border-slate-200 pt-4 dark:border-slate-800">
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
         >
           {pending ? "Saving..." : submitLabel}
         </button>
         <Link
           href="/management/specializations"
-          className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50"
+          className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50"
         >
           Cancel
         </Link>

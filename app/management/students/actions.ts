@@ -9,6 +9,7 @@ import {
   createStudent,
   updateStudent,
   setStudentStatus,
+  findStudentByEmail,
   type StudentStatus,
   type PhdEntryBasisValue,
 } from "@/lib/management/students";
@@ -26,6 +27,9 @@ const CONSTRAINT_MESSAGES: Record<string, string> = {
 
 export interface StudentFormState {
   error?: string;
+  /** Set when the error is "a student with this email already exists" — the form offers a link + a "Create Anyway" confirm step (email has no DB uniqueness constraint, so this is advisory, not a hard block). */
+  duplicateStudentId?: string;
+  needsConfirmation?: boolean;
 }
 
 interface ParsedStudentInput {
@@ -91,6 +95,18 @@ export async function createStudentAction(
 
   const parsed = parseStudentInput(formData);
   if ("error" in parsed) return { error: parsed.error };
+
+  const confirmed = String(formData.get("confirmed") ?? "") === "true";
+  if (!confirmed && parsed.email) {
+    const existing = await findStudentByEmail(parsed.email);
+    if (existing) {
+      return {
+        error: `A student with this email already exists: ${existing.name} (${existing.student_number}).`,
+        duplicateStudentId: existing.id,
+        needsConfirmation: true,
+      };
+    }
+  }
 
   const { error } = await createStudent(parsed);
   if (error) return { error: toUserMessage(error, CONSTRAINT_MESSAGES) };

@@ -8,6 +8,7 @@ import {
   createCourse,
   updateCourse,
   setCourseStatus,
+  findCourseByCode,
   type CourseStatus,
 } from "@/lib/management/courses";
 import { toUserMessage } from "@/lib/management/mutation-errors";
@@ -27,6 +28,8 @@ const CONSTRAINT_MESSAGES: Record<string, string> = {
 
 export interface CourseFormState {
   error?: string;
+  /** Set only when the error is "a course with this code already exists" — lets the form link straight to it instead of just showing text. */
+  duplicateCourseId?: string;
 }
 
 interface ParsedCourseInput {
@@ -76,6 +79,17 @@ export async function createCourseAction(
 
   const parsed = parseCourseInput(formData);
   if ("error" in parsed) return { error: parsed.error };
+
+  // Pre-check ahead of the DB's own courses_code_key constraint — lets the
+  // form point straight at the existing course ("use existing course?")
+  // instead of just a generic "already exists" error.
+  const existing = await findCourseByCode(parsed.code);
+  if (existing) {
+    return {
+      error: `A course with code "${existing.code}" already exists (${existing.name}).`,
+      duplicateCourseId: existing.id,
+    };
+  }
 
   const { error } = await createCourse(parsed);
   if (error) return { error: toUserMessage(error, CONSTRAINT_MESSAGES) };

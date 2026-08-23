@@ -13,14 +13,14 @@ export default async function ManagementDocumentsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Documents</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Documents</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Configured document requirements and recent student submissions.
         </p>
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
           Document Requirements ({requirements.length})
         </h2>
         {requirementsError ? (
@@ -31,7 +31,7 @@ export default async function ManagementDocumentsPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
           Recent Submissions ({submissions.length})
         </h2>
         {submissionsError ? (

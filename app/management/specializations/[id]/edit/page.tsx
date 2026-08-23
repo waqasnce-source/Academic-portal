@@ -27,11 +27,11 @@ export default async function EditSpecializationPage(
       <div>
         <Link
           href="/management/specializations"
-          className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50"
+          className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50"
         >
           ← Specializations
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
           Edit Specialization
         </h1>
       </div>

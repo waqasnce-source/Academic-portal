@@ -27,7 +27,8 @@ export function ProgramForm({
     code: string;
     name: string;
     degree_level: DegreeLevel;
-    duration_years: number;
+    duration_years: number | null;
+    duration_verified: boolean;
     status: ProgramStatus;
   };
   submitLabel: string;
@@ -37,7 +38,7 @@ export function ProgramForm({
   return (
     <form
       action={formAction}
-      className="max-w-lg space-y-5 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950"
+      className="max-w-lg space-y-5 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"
     >
       <div className="space-y-1">
         <label htmlFor="department_id" className={labelClasses}>
@@ -115,7 +116,7 @@ export function ProgramForm({
 
       <div className="space-y-1">
         <label htmlFor="duration_years" className={labelClasses}>
-          Duration (years)
+          Duration (years) — leave blank until confirmed
         </label>
         <input
           id="duration_years"
@@ -123,10 +124,26 @@ export function ProgramForm({
           type="number"
           min="0.5"
           step="0.5"
-          defaultValue={defaultValues?.duration_years}
-          required
+          defaultValue={defaultValues?.duration_years ?? ""}
           className={fieldClasses}
         />
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          No official duration is on file for most programs yet — this can stay empty until the real NCEG/University
+          of Peshawar regulation is confirmed.
+        </p>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <input
+          id="duration_verified"
+          name="duration_verified"
+          type="checkbox"
+          defaultChecked={defaultValues?.duration_verified ?? false}
+          className="h-4 w-4 rounded border-slate-300 dark:border-slate-700"
+        />
+        <label htmlFor="duration_verified" className="text-sm text-slate-700 dark:text-slate-300">
+          Duration confirmed against an official regulation
+        </label>
       </div>
 
       <div className="space-y-1">
@@ -151,17 +168,17 @@ export function ProgramForm({
         <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>
       )}
 
-      <div className="flex items-center gap-4 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+      <div className="flex items-center gap-4 border-t border-slate-200 pt-4 dark:border-slate-800">
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
         >
           {pending ? "Saving..." : submitLabel}
         </button>
         <Link
           href="/management/programs"
-          className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50"
+          className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50"
         >
           Cancel
         </Link>

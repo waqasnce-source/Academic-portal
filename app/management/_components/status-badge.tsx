@@ -13,7 +13,7 @@ const TONE_CLASSES: Record<BadgeTone, string> = {
   warning:
     "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400",
   danger: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400",
-  neutral: "bg-zinc-100 text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400",
+  neutral: "bg-slate-100 text-slate-600 dark:bg-slate-900 dark:text-slate-400",
 };
 
 export function StatusBadge({ label, tone }: { label: string; tone: BadgeTone }) {

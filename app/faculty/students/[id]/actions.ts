@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/supabase/dal";
 import { getCurrentFacultyId } from "@/lib/academic/identity";
-import { getActiveSuperviseesForFaculty } from "@/lib/academic/supervisors";
+import { getSuperviseesForFaculty } from "@/lib/academic/supervisors";
 import { STUDENT_MILESTONE_STATUSES } from "@/lib/academic/milestones";
 import { upsertStudentMilestoneRecord } from "@/lib/academic/milestone-sync";
 import { UUID_RE } from "@/lib/management/query-params";
@@ -37,7 +37,7 @@ export async function updateStudentMilestoneAction(
   const facultyId = await getCurrentFacultyId(profile.id);
   if (!facultyId) return { error: "No faculty record is linked to your account." };
 
-  const supervisees = await getActiveSuperviseesForFaculty(facultyId);
+  const supervisees = await getSuperviseesForFaculty(facultyId);
   if (!supervisees.some((s) => s.student.id === studentId)) {
     return { error: "You are not an active supervisor for this student." };
   }

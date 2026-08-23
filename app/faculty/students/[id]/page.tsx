@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/supabase/dal";
 import { getCurrentFacultyId, getStudentProfileSummary } from "@/lib/academic/identity";
-import { getActiveSuperviseesForFaculty, getSupervisorAssignmentsForStudent } from "@/lib/academic/supervisors";
+import { getSuperviseesForFaculty, getSupervisorAssignmentsForStudent } from "@/lib/academic/supervisors";
 import { getStudentAcademicStatus } from "@/lib/academic/status-engine";
 import { getEffectiveMilestonesForStudent } from "@/lib/academic/milestones";
 import { getDocumentRequirementsForMilestone, getDocumentSubmissionsForStudent } from "@/lib/academic/documents";
@@ -22,7 +22,7 @@ export default async function FacultyStudentDetailPage(props: PageProps<"/facult
   // Defense in depth: RLS already scopes every academic-progress table to
   // active supervisees, but this explicit check gives a clean not-found
   // instead of a page full of empty sections for a non-supervisee id.
-  const supervisees = await getActiveSuperviseesForFaculty(facultyId);
+  const supervisees = await getSuperviseesForFaculty(facultyId);
   if (!supervisees.some((s) => s.student.id === studentId)) notFound();
 
   const summary = await getStudentProfileSummary(studentId);
@@ -62,16 +62,16 @@ export default async function FacultyStudentDetailPage(props: PageProps<"/facult
   return (
     <div className="space-y-8">
       <div>
-        <Link href="/faculty/students" className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50">
+        <Link href="/faculty/students" className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50">
           ← My Students
         </Link>
         <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
-          <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">{summary.full_name}</h1>
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">{summary.full_name}</h1>
           {status && <StudentStatusBadge statusLabel={status.statusLabel} />}
         </div>
       </div>
 
-      <section className="grid grid-cols-1 gap-4 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="grid grid-cols-1 gap-4 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950 sm:grid-cols-2 lg:grid-cols-3">
         <Field label="Student ID" value={summary.student_number} />
         <Field label="Program" value={summary.program.name} />
         <Field label="Discipline" value={summary.program.department.name} />
@@ -89,14 +89,14 @@ export default async function FacultyStudentDetailPage(props: PageProps<"/facult
       </section>
 
       {status && (
-        <section className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
-          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+        <section className="rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Current Academic Stage
           </p>
-          <p className="mt-1 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+          <p className="mt-1 text-xl font-semibold text-slate-900 dark:text-slate-50">
             {status.currentStage ?? (status.statusLabel === "COMPLETED" ? "Completed" : "—")}
           </p>
-          <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
             Next: {status.nextMilestone?.title ?? status.currentMilestone?.title ?? "No further action required"}
           </p>
           <div className="mt-4">
@@ -112,27 +112,27 @@ export default async function FacultyStudentDetailPage(props: PageProps<"/facult
       )}
 
       {researchProject && (
-        <section className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
-          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Research Proposal</p>
-          <p className="mt-1 text-sm font-medium text-zinc-900 dark:text-zinc-50">{researchProject.title}</p>
+        <section className="rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Research Proposal</p>
+          <p className="mt-1 text-sm font-medium text-slate-900 dark:text-slate-50">{researchProject.title}</p>
           {latestProposal && (
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">GSC</p>
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">GSC</p>
                   {latestProposal.gsc_status && <MilestoneStatusBadge status={latestProposal.gsc_status} />}
                 </div>
                 {latestProposal.gsc_comments && (
-                  <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{latestProposal.gsc_comments}</p>
+                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{latestProposal.gsc_comments}</p>
                 )}
               </div>
               <div>
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">ASRB</p>
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">ASRB</p>
                   {latestProposal.asrb_status && <MilestoneStatusBadge status={latestProposal.asrb_status} />}
                 </div>
                 {latestProposal.asrb_comments && (
-                  <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{latestProposal.asrb_comments}</p>
+                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{latestProposal.asrb_comments}</p>
                 )}
               </div>
             </div>
@@ -141,24 +141,24 @@ export default async function FacultyStudentDetailPage(props: PageProps<"/facult
       )}
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
           Milestone Timeline ({milestones.length})
         </h2>
         <ol className="space-y-3">
           {milestones.map((m) => {
             const docSummary = documentSummaryByMilestone.get(m.id);
             return (
-              <li key={m.id} className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
+              <li key={m.id} className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       Step {m.sequence_no}
                       {m.category ? ` · ${m.category}` : ""}
                       {!m.required ? " · Optional" : ""}
                     </p>
-                    <p className="mt-0.5 font-medium text-zinc-900 dark:text-zinc-50">{m.title}</p>
+                    <p className="mt-0.5 font-medium text-slate-900 dark:text-slate-50">{m.title}</p>
                     {docSummary && (
-                      <p className={`mt-1 text-xs ${docSummary.needsCorrection ? "text-amber-600 dark:text-amber-400" : "text-zinc-500 dark:text-zinc-400"}`}>
+                      <p className={`mt-1 text-xs ${docSummary.needsCorrection ? "text-amber-600 dark:text-amber-400" : "text-slate-500 dark:text-slate-400"}`}>
                         Documents: {docSummary.submittedCount}/{docSummary.total} submitted
                         {docSummary.needsCorrection ? " · correction requested" : ""}
                       </p>
@@ -179,17 +179,17 @@ export default async function FacultyStudentDetailPage(props: PageProps<"/facult
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">{label}</p>
-      <p className="mt-1 text-sm text-zinc-900 dark:text-zinc-50">{value}</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="mt-1 text-sm text-slate-900 dark:text-slate-50">{value}</p>
     </div>
   );
 }
 
 function MiniStat({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-md border border-zinc-200 px-3 py-2 dark:border-zinc-800">
-      <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
-      <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">{value}</p>
+    <div className="rounded-md border border-slate-200 px-3 py-2 dark:border-slate-800">
+      <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">{value}</p>
     </div>
   );
 }

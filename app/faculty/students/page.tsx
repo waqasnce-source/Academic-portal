@@ -17,8 +17,8 @@ export default async function FacultyStudentsPage(props: PageProps<"/faculty/stu
 
   if (!facultyId) {
     return (
-      <div className="rounded-lg border border-dashed border-zinc-300 px-4 py-12 text-center dark:border-zinc-700">
-        <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">No faculty record found</p>
+      <div className="rounded-lg border border-dashed border-slate-300 px-4 py-12 text-center dark:border-slate-700">
+        <p className="text-sm font-medium text-slate-700 dark:text-slate-300">No faculty record found</p>
       </div>
     );
   }
@@ -55,8 +55,8 @@ export default async function FacultyStudentsPage(props: PageProps<"/faculty/stu
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">My Students</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">My Students</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           {filtered.length.toLocaleString()} of {supervisees.length.toLocaleString()} supervisee
           {supervisees.length === 1 ? "" : "s"} shown
         </p>
@@ -64,7 +64,7 @@ export default async function FacultyStudentsPage(props: PageProps<"/faculty/stu
 
       <form
         method="GET"
-        className="flex flex-wrap items-end gap-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950"
+        className="flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950"
       >
         <SelectFilter name="program" label="Program" value={programFilter} options={programs} />
         <SelectFilter name="discipline" label="Discipline" value={disciplineFilter} options={disciplines} />
@@ -85,13 +85,13 @@ export default async function FacultyStudentsPage(props: PageProps<"/faculty/stu
         <div className="flex gap-2">
           <button
             type="submit"
-            className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-600 dark:hover:bg-brand-500"
           >
             Apply
           </button>
           <Link
             href="/faculty/students"
-            className="rounded-md border border-zinc-300 px-4 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+            className="rounded-md border border-slate-300 px-4 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-900"
           >
             Reset
           </Link>
@@ -101,36 +101,36 @@ export default async function FacultyStudentsPage(props: PageProps<"/faculty/stu
       {filtered.length === 0 ? (
         <EmptyState entityLabelPlural="students" hasActiveFilters={hasActiveFilters} clearHref="/faculty/students" />
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-          <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
-            <thead className="bg-zinc-50 dark:bg-zinc-900">
+        <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+          <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+            <thead className="bg-slate-50 dark:bg-slate-900">
               <tr>
-                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Student</th>
-                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Program</th>
-                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Discipline</th>
-                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Specialization</th>
-                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Current Stage</th>
-                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Status</th>
+                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Student</th>
+                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Program</th>
+                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Discipline</th>
+                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Specialization</th>
+                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Current Stage</th>
+                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
               {filtered.map((s) => (
                 <tr key={s.id}>
-                  <td className="whitespace-nowrap px-4 py-2.5 font-medium text-zinc-900 dark:text-zinc-50">
+                  <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-900 dark:text-slate-50">
                     <Link href={`/faculty/students/${s.student.id}`} className="hover:underline">
                       {s.student.profile?.full_name ?? s.student.student_number}
                     </Link>
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+                  <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                     {s.student.program?.name ?? "—"}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+                  <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                     {s.student.program?.department?.name ?? "—"}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+                  <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                     {s.student.specialization?.name ?? "—"}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2.5 text-zinc-700 dark:text-zinc-300">
+                  <td className="whitespace-nowrap px-4 py-2.5 text-slate-700 dark:text-slate-300">
                     {s.academicStatus?.currentStage ?? "—"}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2.5">

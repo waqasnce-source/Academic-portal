@@ -30,7 +30,7 @@ export function ResultDeclarationForm({
   const [state, formAction, pending] = useActionState<ThesisFormState | undefined, FormData>(boundAction, undefined);
 
   return (
-    <form action={formAction} className="space-y-4 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
+    <form action={formAction} className="space-y-4 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
           <label htmlFor="declaration_date" className={labelClasses}>
@@ -94,7 +94,7 @@ export function ResultDeclarationForm({
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
       >
         {pending ? "Saving..." : "Save"}
       </button>
@@ -104,12 +104,12 @@ export function ResultDeclarationForm({
 
 function Checkbox({ name, label, defaultChecked }: { name: string; label: string; defaultChecked?: boolean }) {
   return (
-    <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+    <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
       <input
         type="checkbox"
         name={name}
         defaultChecked={defaultChecked ?? false}
-        className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-700"
+        className="h-4 w-4 rounded border-slate-300 dark:border-slate-700"
       />
       {label}
     </label>

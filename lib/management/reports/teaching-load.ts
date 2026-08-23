@@ -7,6 +7,7 @@ import {
   parsePage,
   parseText,
 } from "@/lib/management/query-params";
+import { courseCreditHours, isReportableOffering } from "@/lib/management/reporting-policy";
 
 export const TEACHING_LOAD_PAGE_SIZE = 25;
 
@@ -72,6 +73,7 @@ interface RawAssignmentRow {
   /** profile nullable as of Phase 3 (faculty.profile_id relaxation) — see the Phase 8B fix note below; `name` is the fallback display identity. */
   faculty: { id: string; name: string; profile: { full_name: string } | null };
   course_offering: {
+    status: string;
     course: { credit_hours: number; department_id: string };
     semester_id: string;
   };
@@ -100,6 +102,13 @@ interface RawAssignmentRow {
  * OR management`) and `courses_select_authenticated` (`true`) both permit
  * a management caller to read everything needed.
  *
+ * Applies the shared reporting policy from ../reporting-policy.ts:
+ * isReportableOffering() excludes 'planned'/'cancelled' offerings (this
+ * previously included them, silently diverging from academic-sessions.ts,
+ * which already excluded 'cancelled' — now both surfaces agree), and
+ * courseCreditHours() is the same CH coercion used everywhere else, so
+ * this report's totals can never again drift from academic-sessions.ts's.
+ *
  * `profile:profiles` is a PLAIN embed (Phase 8B fix): faculty.profile_id
  * is nullable (Phase 3), so `profile:profiles!inner` previously dropped
  * every assignment row for a profile-less faculty member from this report
@@ -116,7 +125,7 @@ export async function getTeachingLoadReport(
     .from("course_offering_faculty")
     .select(
       `faculty:faculty!inner ( id, name, profile:profiles ( full_name ) ),
-       course_offering:course_offerings!inner ( semester_id, course:courses!inner ( credit_hours, department_id ) )`
+       course_offering:course_offerings!inner ( status, semester_id, course:courses!inner ( credit_hours, department_id ) )`
     )
     .limit(RAW_FETCH_LIMIT);
 
@@ -133,6 +142,9 @@ export async function getTeachingLoadReport(
   const q = filters.q.trim().toLowerCase();
 
   const filtered = rows.filter((row) => {
+    if (!isReportableOffering(row.course_offering.status)) {
+      return false;
+    }
     if (filters.departmentId && row.course_offering.course.department_id !== filters.departmentId) {
       return false;
     }
@@ -145,16 +157,17 @@ export async function getTeachingLoadReport(
 
   const byFaculty = new Map<string, TeachingLoadRow>();
   for (const row of filtered) {
+    const rowCreditHours = courseCreditHours(row.course_offering.course);
     const existing = byFaculty.get(row.faculty.id);
     if (existing) {
       existing.offeringCount += 1;
-      existing.totalCreditHours += Number(row.course_offering.course.credit_hours);
+      existing.totalCreditHours += rowCreditHours;
     } else {
       byFaculty.set(row.faculty.id, {
         facultyId: row.faculty.id,
         fullName: row.faculty.profile?.full_name ?? row.faculty.name,
         offeringCount: 1,
-        totalCreditHours: Number(row.course_offering.course.credit_hours),
+        totalCreditHours: rowCreditHours,
       });
     }
   }

@@ -14,15 +14,20 @@ export default async function NewCoursePage() {
       <div>
         <Link
           href="/management/courses"
-          className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50"
+          className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50"
         >
           ← Courses
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
           Add Course
         </h1>
       </div>
-      <CourseForm action={createCourseAction} departments={departments} submitLabel="Create" />
+      <CourseForm
+        action={createCourseAction}
+        departments={departments}
+        defaultValues={{ department_id: "", code: "", name: "", credit_hours: 3, status: "active" }}
+        submitLabel="Create"
+      />
     </div>
   );
 }

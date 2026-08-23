@@ -18,9 +18,9 @@ export default async function FacultyPage() {
     return (
       <div className="space-y-8">
         <NotificationsWidget notifications={recentNotifications} revalidatePath="/faculty" />
-        <div className="rounded-lg border border-dashed border-zinc-300 px-4 py-12 text-center dark:border-zinc-700">
-          <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">No faculty record found</p>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <div className="rounded-lg border border-dashed border-slate-300 px-4 py-12 text-center dark:border-slate-700">
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-300">No faculty record found</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Your account has a faculty profile, but no faculty record has been linked yet. Contact Management.
           </p>
         </div>
@@ -46,10 +46,10 @@ export default async function FacultyPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
           Welcome, {profile.full_name}
         </h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">Faculty dashboard</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Faculty dashboard</p>
       </div>
 
       <NotificationsWidget notifications={recentNotifications} revalidatePath="/faculty" />
@@ -63,10 +63,10 @@ export default async function FacultyPage() {
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">My Courses</h2>
+          <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">My Courses</h2>
           <Link
             href="/faculty/courses"
-            className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            className="text-sm text-slate-600 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
           >
             View all
           </Link>
@@ -81,27 +81,27 @@ export default async function FacultyPage() {
               <Tile label="Students Taught" value={totalEnrolled} />
               <Tile label="Grades Published" value={offerings.reduce((sum, o) => sum + o.resultsPublishedCount, 0)} />
             </div>
-            <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-              <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
-                <thead className="bg-zinc-50 dark:bg-zinc-900">
+            <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+              <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+                <thead className="bg-slate-50 dark:bg-slate-900">
                   <tr>
-                    <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Course</th>
-                    <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Semester</th>
-                    <th className="whitespace-nowrap px-4 py-2.5 text-right font-medium text-zinc-500 dark:text-zinc-400">Enrolled</th>
+                    <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Course</th>
+                    <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Semester</th>
+                    <th className="whitespace-nowrap px-4 py-2.5 text-right font-medium text-slate-500 dark:text-slate-400">Enrolled</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                   {offerings.slice(0, 5).map((o) => (
                     <tr key={o.id}>
-                      <td className="whitespace-nowrap px-4 py-2.5 font-medium text-zinc-900 dark:text-zinc-50">
+                      <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-900 dark:text-slate-50">
                         <Link href={`/faculty/courses/${o.id}`} className="hover:underline">
                           {o.course.code} — {o.course.name}
                         </Link>
                       </td>
-                      <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+                      <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                         {o.semester.academic_year} — {o.semester.name}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-2.5 text-right text-zinc-500 dark:text-zinc-400">
+                      <td className="whitespace-nowrap px-4 py-2.5 text-right text-slate-500 dark:text-slate-400">
                         {o.enrollmentCount}
                       </td>
                     </tr>
@@ -115,10 +115,10 @@ export default async function FacultyPage() {
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Your Supervisees</h2>
+          <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Your Supervisees</h2>
           <Link
             href="/faculty/students"
-            className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            className="text-sm text-slate-600 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
           >
             View all
           </Link>
@@ -127,32 +127,32 @@ export default async function FacultyPage() {
         {supervisees.length === 0 ? (
           <EmptyState entityLabelPlural="supervisees" hasActiveFilters={false} clearHref="/faculty" />
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-            <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
-              <thead className="bg-zinc-50 dark:bg-zinc-900">
+          <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+            <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+              <thead className="bg-slate-50 dark:bg-slate-900">
                 <tr>
-                  <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Student</th>
-                  <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Program</th>
-                  <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Current Stage</th>
-                  <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Next Action</th>
-                  <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Status</th>
+                  <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Student</th>
+                  <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Program</th>
+                  <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Current Stage</th>
+                  <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Next Action</th>
+                  <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {supervisees.slice(0, 10).map((s) => (
                   <tr key={s.id}>
-                    <td className="whitespace-nowrap px-4 py-2.5 font-medium text-zinc-900 dark:text-zinc-50">
+                    <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-900 dark:text-slate-50">
                       <Link href={`/faculty/students/${s.student.id}`} className="hover:underline">
                         {s.student.profile?.full_name ?? s.student.student_number}
                       </Link>
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+                    <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                       {s.student.program?.name ?? "—"}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2.5 text-zinc-700 dark:text-zinc-300">
+                    <td className="whitespace-nowrap px-4 py-2.5 text-slate-700 dark:text-slate-300">
                       {s.academicStatus?.currentStage ?? "—"}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+                    <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                       {s.academicStatus?.nextMilestone?.title ?? s.academicStatus?.currentMilestone?.title ?? "—"}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2.5">
@@ -171,9 +171,9 @@ export default async function FacultyPage() {
 
 function Tile({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-      <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
-      <p className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">{value}</p>
+    <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
+      <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-50">{value}</p>
     </div>
   );
 }

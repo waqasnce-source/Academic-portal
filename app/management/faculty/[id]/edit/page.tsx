@@ -30,22 +30,30 @@ export default async function EditFacultyPage(props: PageProps<"/management/facu
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/management/faculty" className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50">
+        <Link href="/management/faculty" className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50">
           ← Faculty
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Edit Faculty</h1>
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Edit Faculty</h1>
+          <Link
+            href={`/management/faculty/${id}`}
+            className="text-sm font-medium text-brand-700 underline hover:text-brand-800 dark:text-brand-300 dark:hover:text-brand-200"
+          >
+            View Academic Dashboard →
+          </Link>
+        </div>
       </div>
       <FacultyForm action={action} departments={departments} defaultValues={faculty} submitLabel="Save changes" />
 
-      <section className="space-y-3 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
-        <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Account / Identity</h2>
+      <section className="space-y-3 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950">
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Account / Identity</h2>
         {linkedAccount ? (
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-sm text-zinc-700 dark:text-zinc-300">
+              <p className="text-sm text-slate-700 dark:text-slate-300">
                 Linked to <span className="font-medium">{linkedAccount.fullName}</span> ({linkedAccount.email})
               </p>
-              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 {authConfirmation === null
                   ? "Invitation status could not be determined."
                   : authConfirmation.emailConfirmed
@@ -67,7 +75,7 @@ export default async function EditFacultyPage(props: PageProps<"/management/facu
                   linkedAccount.status === "suspended" ? "active" : "suspended"
                 )}
               >
-                <button type="submit" className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50">
+                <button type="submit" className="text-sm text-slate-600 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50">
                   {linkedAccount.status === "suspended" ? "Reactivate account" : "Suspend account"}
                 </button>
               </form>
@@ -76,17 +84,17 @@ export default async function EditFacultyPage(props: PageProps<"/management/facu
         ) : (
           <div className="space-y-5">
             <div className="space-y-2">
-              <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                 Invite a new account
               </p>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 Sends an email invitation. The faculty member sets their own password by following the link —
                 Management never sets or sees a password.
               </p>
               <InviteFacultyAccountForm facultyId={id} defaultEmail={faculty.email ?? ""} />
             </div>
-            <div className="space-y-2 border-t border-zinc-200 pt-5 dark:border-zinc-800">
-              <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            <div className="space-y-2 border-t border-slate-200 pt-5 dark:border-slate-800">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                 Or link an existing account
               </p>
               <LinkFacultyAccountForm facultyId={id} options={unlinkedProfiles} />

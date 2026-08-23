@@ -116,6 +116,47 @@ export interface SemesterProgress {
   semesters: { semesterId: string; startDate: string }[];
 }
 
+/**
+ * Raw coursework credit-hour totals by enrollment status, independent of
+ * curriculum_requirements category mapping. Distinct from
+ * computeDegreeAudit()'s byCategory[].completedCreditHours (below), which
+ * only counts a course toward a category if a course-level
+ * curriculum_requirements row links it there — most programs currently
+ * have only category-level quota rows (no course-level rows), so that
+ * figure is 0 regardless of what a student has actually completed. This
+ * is the simple, direct figure the Academic Progress "Coursework
+ * Progress" panel needs: the same COMPLETED_ENROLLMENT_STATUS filter and
+ * the same credit_hours field, just not gated by curriculum-category
+ * configuration, and no new enrollment fetch (reuses the same
+ * StudentCourseworkEnrollmentRow[] getStudentCourseworkEnrollments()
+ * already produces). 'dropped' enrollments are excluded from every
+ * bucket (never counted as completed, in-progress, or failed), per
+ * explicit instruction.
+ */
+export interface CreditHourBreakdown {
+  completedCreditHours: number;
+  inProgressCreditHours: number;
+  failedCreditHours: number;
+  completedCourseCount: number;
+  inProgressCourseCount: number;
+  failedCourseCount: number;
+}
+
+export function computeCreditHourBreakdown(enrollments: StudentCourseworkEnrollmentRow[]): CreditHourBreakdown {
+  const completed = enrollments.filter((e) => e.status === "completed");
+  const inProgress = enrollments.filter((e) => e.status === "active");
+  const failed = enrollments.filter((e) => e.status === "failed");
+  const sumCh = (rows: StudentCourseworkEnrollmentRow[]) => rows.reduce((sum, e) => sum + Number(e.course.credit_hours), 0);
+  return {
+    completedCreditHours: sumCh(completed),
+    inProgressCreditHours: sumCh(inProgress),
+    failedCreditHours: sumCh(failed),
+    completedCourseCount: completed.length,
+    inProgressCourseCount: inProgress.length,
+    failedCourseCount: failed.length,
+  };
+}
+
 export interface DegreeAuditResult {
   curriculumStatus: CurriculumStatus;
   byCategory: CategoryProgress[];
@@ -127,6 +168,8 @@ export interface DegreeAuditResult {
   semesterProgress: SemesterProgress;
   cgpa: GpaFigure;
   currentSemesterGpa: GpaFigure | null;
+  /** Raw, category-independent CH breakdown — see computeCreditHourBreakdown() above. */
+  creditHourBreakdown: CreditHourBreakdown;
 }
 
 function resolveGradePoint(
@@ -306,6 +349,7 @@ export function computeDegreeAudit(
     semesterProgress: { distinctSemestersEnrolled: semesters.length, semesters },
     cgpa,
     currentSemesterGpa,
+    creditHourBreakdown: computeCreditHourBreakdown(enrollments),
   };
 }
 

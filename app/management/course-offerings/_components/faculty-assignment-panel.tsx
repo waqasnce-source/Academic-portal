@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { fieldClasses, labelClasses } from "@/app/management/_components/form-styles";
 import { COURSE_OFFERING_FACULTY_ROLES } from "@/lib/management/status-enums";
@@ -30,7 +31,7 @@ export function FacultyAssignmentPanel({
   return (
     <div className="space-y-4">
       {assignments.length === 0 ? (
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           No faculty assigned yet — this offering is TBA.
         </p>
       ) : (
@@ -38,16 +39,29 @@ export function FacultyAssignmentPanel({
           {assignments.map((a) => (
             <li
               key={a.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-800"
+              className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm dark:border-slate-800"
             >
-              <span className="text-zinc-700 dark:text-zinc-300">
-                {a.faculty.profile?.full_name ?? a.faculty.name}
-                <span className="ml-2 text-xs text-zinc-500 dark:text-zinc-400">{ROLE_LABELS[a.role]}</span>
+              <span className="text-slate-700 dark:text-slate-300">
+                <Link href={`/management/faculty/${a.faculty.id}`} className="font-medium text-slate-900 hover:underline dark:text-slate-50">
+                  {a.faculty.profile?.full_name ?? a.faculty.name}
+                </Link>
+                <span className="ml-2 text-xs text-slate-500 dark:text-slate-400">{ROLE_LABELS[a.role]}</span>
               </span>
-              <form action={removeFacultyAssignmentAction.bind(null, offeringId, a.id)}>
+              <form
+                action={removeFacultyAssignmentAction.bind(null, offeringId, a.id)}
+                onSubmit={(e) => {
+                  if (
+                    !confirm(
+                      `Remove ${a.faculty.profile?.full_name ?? a.faculty.name} from this offering? This cannot be undone and leaves no historical record of the assignment.`
+                    )
+                  ) {
+                    e.preventDefault();
+                  }
+                }}
+              >
                 <button
                   type="submit"
-                  className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                  className="text-sm text-slate-600 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
                 >
                   Remove
                 </button>
@@ -57,7 +71,7 @@ export function FacultyAssignmentPanel({
         </ul>
       )}
 
-      <form action={formAction} className="flex flex-wrap items-end gap-3 rounded-md border border-dashed border-zinc-300 p-4 dark:border-zinc-700">
+      <form action={formAction} className="flex flex-wrap items-end gap-3 rounded-md border border-dashed border-slate-300 p-4 dark:border-slate-700">
         <div className="flex min-w-[200px] flex-col gap-1">
           <label htmlFor="faculty_id" className={labelClasses}>
             Faculty
@@ -88,7 +102,7 @@ export function FacultyAssignmentPanel({
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
         >
           {pending ? "Assigning..." : "Assign"}
         </button>

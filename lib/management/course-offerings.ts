@@ -14,7 +14,10 @@ import {
   type OfferingStatus,
   COURSE_OFFERING_FACULTY_ROLES,
   type CourseOfferingFacultyRole,
+  type DegreeLevel,
 } from "./status-enums";
+import { courseDegreeLevel } from "./academic-sessions";
+import { courseCreditHours, type DegreeLevelSource } from "./reporting-policy";
 
 export { OFFERING_STATUSES, type OfferingStatus, COURSE_OFFERING_FACULTY_ROLES, type CourseOfferingFacultyRole };
 
@@ -54,6 +57,8 @@ export interface CourseOfferingFilters {
   q: string;
   status: OfferingStatus | "";
   semesterId: string;
+  /** Discipline — filters on the embedded course's department_id, a verified-safe one-level dot-path filter in this codebase (see students.ts's program.department_id precedent). */
+  departmentId: string;
   page: number;
 }
 
@@ -66,6 +71,7 @@ export interface CourseOfferingsResult {
 
 export interface CourseOfferingFilterOptions {
   semesters: { id: string; name: string; academic_year: string }[];
+  departments: { id: string; name: string }[];
 }
 
 export function parseCourseOfferingFilters(
@@ -75,12 +81,13 @@ export function parseCourseOfferingFilters(
     q: parseText(searchParams.q),
     status: parseEnumValue(searchParams.status, OFFERING_STATUSES),
     semesterId: parseUuid(searchParams.semester),
+    departmentId: parseUuid(searchParams.department),
     page: parsePage(searchParams.page),
   };
 }
 
 export function hasActiveCourseOfferingFilters(filters: CourseOfferingFilters): boolean {
-  return Boolean(filters.q || filters.status || filters.semesterId);
+  return Boolean(filters.q || filters.status || filters.semesterId || filters.departmentId);
 }
 
 export function buildCourseOfferingsHref(
@@ -91,6 +98,7 @@ export function buildCourseOfferingsHref(
   if (filters.q) params.set("q", filters.q);
   if (filters.status) params.set("status", filters.status);
   if (filters.semesterId) params.set("semester", filters.semesterId);
+  if (filters.departmentId) params.set("department", filters.departmentId);
   if (page > 1) params.set("page", String(page));
 
   const qs = params.toString();
@@ -159,6 +167,7 @@ export async function getCourseOfferings(
 
   if (filters.status) countQuery = countQuery.eq("status", filters.status);
   if (filters.semesterId) countQuery = countQuery.eq("semester_id", filters.semesterId);
+  if (filters.departmentId) countQuery = countQuery.eq("course.department_id", filters.departmentId);
   if (filters.q) {
     countQuery = countQuery.or(
       `code.ilike.%${escapeIlike(filters.q)}%,name.ilike.%${escapeIlike(filters.q)}%`,
@@ -181,6 +190,7 @@ export async function getCourseOfferings(
 
   if (filters.status) dataQuery = dataQuery.eq("status", filters.status);
   if (filters.semesterId) dataQuery = dataQuery.eq("semester_id", filters.semesterId);
+  if (filters.departmentId) dataQuery = dataQuery.eq("course.department_id", filters.departmentId);
   if (filters.q) {
     dataQuery = dataQuery.or(
       `code.ilike.%${escapeIlike(filters.q)}%,name.ilike.%${escapeIlike(filters.q)}%`,
@@ -208,20 +218,23 @@ export async function getCourseOfferings(
   };
 }
 
-/** Semester options for the filter dropdown — `using (true)` for any authenticated user. Also reused as the create/edit form's semester select (all semesters, not just ongoing — a 'planned' offering is commonly created for an 'upcoming' semester). */
+/** Semester + discipline options for the filter dropdowns — `using (true)` for any authenticated user. Semesters are also reused as the create/edit form's semester select (all semesters, not just ongoing — a 'planned' offering is commonly created for an 'upcoming' semester). */
 export async function getCourseOfferingFilterOptions(): Promise<CourseOfferingFilterOptions> {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("semesters")
-    .select("id, name, academic_year")
-    .order("start_date", { ascending: false });
+  const [semestersRes, departmentsRes] = await Promise.all([
+    supabase.from("semesters").select("id, name, academic_year").order("start_date", { ascending: false }),
+    supabase.from("departments").select("id, name").order("name"),
+  ]);
 
-  if (error) {
-    console.error("getCourseOfferingFilterOptions semesters failed:", error);
+  if (semestersRes.error) {
+    console.error("getCourseOfferingFilterOptions semesters failed:", semestersRes.error);
+  }
+  if (departmentsRes.error) {
+    console.error("getCourseOfferingFilterOptions departments failed:", departmentsRes.error);
   }
 
-  return { semesters: data ?? [] };
+  return { semesters: semestersRes.data ?? [], departments: departmentsRes.data ?? [] };
 }
 
 export interface OfferingOption {
@@ -263,6 +276,11 @@ export interface CourseOfferingDetail {
   /** For display context on the edit page — the course/semester don't change identity via this form, only section/capacity/status do. */
   course: { code: string; name: string; status: string };
   semester: { name: string; academic_year: string };
+  /** Read-only reporting context (discipline/CH/degree level) — real stored credit_hours and the same structural/code-fallback degree-level determination as academic-sessions.ts, not a second implementation. */
+  discipline: { id: string; name: string };
+  creditHours: number;
+  degreeLevel: DegreeLevel | null;
+  degreeLevelSource: DegreeLevelSource;
 }
 
 const OFFERING_DETAIL_SELECT = `
@@ -272,9 +290,31 @@ const OFFERING_DETAIL_SELECT = `
   section,
   capacity,
   status,
-  course:courses!inner ( code, name, status ),
+  course:courses!inner (
+    code, name, status, credit_hours,
+    department:departments!inner ( id, name ),
+    program_courses ( program:programs ( degree_level ) )
+  ),
   semester:semesters!inner ( name, academic_year )
 `;
+
+interface RawOfferingDetailRow {
+  id: string;
+  course_id: string;
+  semester_id: string;
+  section: string;
+  capacity: number | null;
+  status: OfferingStatus;
+  course: {
+    code: string;
+    name: string;
+    status: string;
+    credit_hours: number;
+    department: { id: string; name: string };
+    program_courses: { program: { degree_level: DegreeLevel } | null }[] | null;
+  };
+  semester: { name: string; academic_year: string };
+}
 
 export async function getCourseOfferingById(id: string): Promise<CourseOfferingDetail | null> {
   const supabase = await createClient();
@@ -285,7 +325,23 @@ export async function getCourseOfferingById(id: string): Promise<CourseOfferingD
     .single();
 
   if (error || !data) return null;
-  return data as unknown as CourseOfferingDetail;
+  const row = data as unknown as RawOfferingDetailRow;
+  const { level, source } = courseDegreeLevel(row.course);
+
+  return {
+    id: row.id,
+    course_id: row.course_id,
+    semester_id: row.semester_id,
+    section: row.section,
+    capacity: row.capacity,
+    status: row.status,
+    course: { code: row.course.code, name: row.course.name, status: row.course.status },
+    semester: row.semester,
+    discipline: row.course.department,
+    creditHours: courseCreditHours(row.course),
+    degreeLevel: level,
+    degreeLevelSource: source,
+  };
 }
 
 export interface CourseOfferingInput {
@@ -307,6 +363,27 @@ export interface CourseOfferingInput {
  * surfaces as 23503 — both mapped by the calling Server Action's
  * CONSTRAINT_MESSAGES, not re-validated here.
  */
+/**
+ * Non-blocking duplicate-offering *information*, not the uniqueness guard
+ * itself — the real guard is the DB's `unique(course_id, semester_id,
+ * section)` constraint (multiple sections of the same course in the same
+ * semester are a legitimate, existing pattern, so this is never used to
+ * hard-block, only to show "this course is already offered here" before
+ * the user adds another section).
+ */
+export async function getOfferingsForCourseInSemester(
+  courseId: string,
+  semesterId: string
+): Promise<{ id: string; section: string; status: OfferingStatus }[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("course_offerings")
+    .select("id, section, status")
+    .eq("course_id", courseId)
+    .eq("semester_id", semesterId);
+  return data ?? [];
+}
+
 export async function createCourseOffering(input: CourseOfferingInput) {
   const supabase = await createClient();
   return supabase.from("course_offerings").insert(input).select("id").single();
@@ -355,6 +432,82 @@ export async function getCourseOfferingFacultyAssignments(
   return (data ?? []) as unknown as CourseOfferingFacultyRow[];
 }
 
+// ---- Enrolled-student roster (management view) ----
+
+export interface OfferingRosterRow {
+  enrollmentId: string;
+  enrollmentStatus: string;
+  enrolledAt: string;
+  student: {
+    id: string;
+    name: string;
+    email: string | null;
+    studentNumber: string;
+    program: { name: string; degreeLevel: string } | null;
+  };
+}
+
+/**
+ * `student:students!inner(...)` -- enrollments.student_id is NOT NULL, so
+ * `!inner` here is safe (unlike the nullable-profile_id hazard elsewhere in
+ * this codebase). `profile:profiles` stays a plain embed for the same
+ * reason as everywhere else (students.profile_id is nullable) — full_name
+ * falls back to the student's own `name` column. `program:programs` is a
+ * plain embed too: program_id is NOT NULL on students, but embedding it
+ * `!inner` would be redundant defense for a FK Postgres already enforces,
+ * and a plain embed degrades harmlessly to null in the pathological case
+ * rather than dropping the whole roster row.
+ */
+const OFFERING_ROSTER_SELECT = `
+  id, status, enrolled_at,
+  student:students!inner (
+    id, name, student_number, email,
+    profile:profiles ( full_name, email ),
+    program:programs ( name, degree_level )
+  )
+`;
+
+export async function getOfferingRoster(offeringId: string): Promise<OfferingRosterRow[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("enrollments")
+    .select(OFFERING_ROSTER_SELECT)
+    .eq("course_offering_id", offeringId)
+    .order("enrolled_at", { ascending: true });
+
+  if (error) {
+    console.error("getOfferingRoster failed:", error);
+    return [];
+  }
+
+  const rows = data as unknown as {
+    id: string;
+    status: string;
+    enrolled_at: string;
+    student: {
+      id: string;
+      name: string;
+      student_number: string;
+      email: string | null;
+      profile: { full_name: string; email: string } | null;
+      program: { name: string; degree_level: string } | null;
+    };
+  }[];
+
+  return rows.map((r) => ({
+    enrollmentId: r.id,
+    enrollmentStatus: r.status,
+    enrolledAt: r.enrolled_at,
+    student: {
+      id: r.student.id,
+      name: r.student.profile?.full_name ?? r.student.name,
+      email: r.student.profile?.email ?? r.student.email,
+      studentNumber: r.student.student_number,
+      program: r.student.program ? { name: r.student.program.name, degreeLevel: r.student.program.degree_level } : null,
+    },
+  }));
+}
+
 /**
  * RLS enforcement is course_offering_faculty_insert_management
  * (has_role('management')). The database's own partial unique index
@@ -385,6 +538,16 @@ export async function assignFacultyToOffering(
  * 8C addendum), not a gap papered over: adding a history mechanism here
  * was explicitly out of scope unless proven necessary, and reusing the
  * table as-is was the instructed default.
+ *
+ * Reporting-layer consequence (2026-08-17 hardening pass, decision:
+ * accept as a known limitation rather than add an audit table/column):
+ * lib/management/academic-sessions.ts's getFacultyTeachingHistory reads
+ * these rows as they exist RIGHT NOW to answer "who taught session Y" —
+ * it is not, and cannot be, an immutable historical record. If a faculty
+ * assignment for a past session is corrected or reassigned after the
+ * fact, that past session's report changes too, silently, with no trace
+ * that it ever said something different. Do not present these reports as
+ * audit-proof history without revisiting this.
  */
 export async function removeFacultyAssignment(assignmentId: string) {
   const supabase = await createClient();

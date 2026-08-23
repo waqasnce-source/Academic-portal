@@ -7,6 +7,9 @@ import {
   parsePage,
 } from "@/lib/management/query-params";
 import { ENROLLMENT_STATUSES, type EnrollmentStatus } from "./status-enums";
+import { getStudentById } from "./students";
+import { getCourseOfferingById } from "./course-offerings";
+import { notifyIfLinked } from "./notifications";
 
 export { ENROLLMENT_STATUSES, type EnrollmentStatus };
 
@@ -269,4 +272,121 @@ export async function createEnrollment(input: EnrollmentInput) {
 export async function updateEnrollmentStatus(id: string, status: EnrollmentStatus) {
   const supabase = await createClient();
   return supabase.from("enrollments").update({ status }).eq("id", id).select("id").single();
+}
+
+/**
+ * The full student-active / offering-not-cancelled / capacity / insert /
+ * notify chain, extracted so both the single-enrollment Server Action
+ * (app/management/enrollments/actions.ts) and the bulk-enroll Server
+ * Action (app/management/course-offerings/actions.ts) run the exact same
+ * checks instead of two copies drifting apart. The database's own
+ * uq_enrollments_active_student_offering partial unique index remains the
+ * final duplicate-active-enrollment guard either way.
+ */
+export async function enrollStudentInOffering(
+  studentId: string,
+  offeringId: string
+): Promise<{ success: true } | { success: false; error: string }> {
+  const student = await getStudentById(studentId);
+  if (!student) return { success: false, error: "Selected student could not be found." };
+  if (student.status !== "active") {
+    return { success: false, error: `Student's status is "${student.status}" — only active students can be enrolled.` };
+  }
+
+  const offering = await getCourseOfferingById(offeringId);
+  if (!offering) return { success: false, error: "Selected course offering could not be found." };
+  if (offering.status === "cancelled") {
+    return { success: false, error: "This course offering has been cancelled and cannot accept new enrollments." };
+  }
+
+  if (offering.capacity != null) {
+    const activeCount = await getActiveEnrollmentCount(offeringId);
+    if (activeCount >= offering.capacity) {
+      return { success: false, error: `This offering is at capacity (${offering.capacity}/${offering.capacity}).` };
+    }
+  }
+
+  const { error } = await createEnrollment({ student_id: studentId, course_offering_id: offeringId });
+  if (error) {
+    if (error.code === "23505") {
+      return { success: false, error: "Student is already enrolled in this course offering." };
+    }
+    return { success: false, error: "Could not create enrollment." };
+  }
+
+  await notifyIfLinked(
+    student.profile_id,
+    "Course Enrollment",
+    `You have been enrolled in ${offering.course.code} — ${offering.course.name} (${offering.semester.academic_year} ${offering.semester.name}).`
+  );
+
+  return { success: true };
+}
+
+export interface StudentPickerRow {
+  id: string;
+  studentNumber: string;
+  name: string;
+  email: string | null;
+  program: string;
+}
+
+/**
+ * Active students matching a search term, for the offering "Manage
+ * Students" bulk-enroll picker — excludes students already actively
+ * enrolled in this specific offering (re-showing them would just invite a
+ * duplicate-enrollment click the DB has to reject). Capped at 50 rows: a
+ * search-driven picker, not a paginated full listing — matches the
+ * existing "don't load the whole institution's students" performance
+ * expectation for this kind of control.
+ */
+export async function searchEnrollableStudents(offeringId: string, query: string): Promise<StudentPickerRow[]> {
+  const supabase = await createClient();
+
+  const { data: alreadyEnrolled } = await supabase
+    .from("enrollments")
+    .select("student_id")
+    .eq("course_offering_id", offeringId)
+    .eq("status", "active");
+  const excludeIds = (alreadyEnrolled ?? []).map((e) => e.student_id);
+
+  let q = supabase
+    .from("students")
+    .select("id, student_number, name, email, program:programs!inner(name)")
+    .eq("status", "active")
+    .order("student_number")
+    .limit(50);
+
+  if (excludeIds.length > 0) q = q.not("id", "in", `(${excludeIds.join(",")})`);
+
+  const trimmed = query.trim();
+  if (trimmed) {
+    const escaped = trimmed.replace(/[(),]/g, "");
+    q = q.or(`name.ilike.%${escaped}%,email.ilike.%${escaped}%,student_number.ilike.%${escaped}%`);
+  }
+
+  const { data, error } = await q;
+  if (error) {
+    console.error("searchEnrollableStudents failed:", error);
+    return [];
+  }
+
+  return ((data ?? []) as unknown as { id: string; student_number: string; name: string; email: string | null; program: { name: string } }[]).map(
+    (s) => ({ id: s.id, studentNumber: s.student_number, name: s.name, email: s.email, program: s.program.name })
+  );
+}
+
+export interface BulkEnrollOutcome {
+  enrolled: number;
+  failed: { studentId: string; error: string }[];
+}
+
+export async function bulkEnrollStudents(offeringId: string, studentIds: string[]): Promise<BulkEnrollOutcome> {
+  const outcome: BulkEnrollOutcome = { enrolled: 0, failed: [] };
+  for (const studentId of studentIds) {
+    const result = await enrollStudentInOffering(studentId, offeringId);
+    if (result.success) outcome.enrolled++;
+    else outcome.failed.push({ studentId, error: result.error });
+  }
+  return outcome;
 }

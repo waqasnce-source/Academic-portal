@@ -43,7 +43,7 @@ export function StudentForm({
   return (
     <form
       action={formAction}
-      className="max-w-lg space-y-5 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950"
+      className="max-w-lg space-y-5 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"
     >
       <div className="space-y-1">
         <label htmlFor="name" className={labelClasses}>
@@ -149,17 +149,37 @@ export function StudentForm({
         </select>
       </div>
 
-      {state?.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
+      {state?.error && (
+        <p
+          className={`text-sm ${
+            state.needsConfirmation
+              ? "rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-300"
+              : "text-red-600 dark:text-red-400"
+          }`}
+        >
+          {state.error}
+          {state.duplicateStudentId && (
+            <>
+              {" "}
+              <Link href={`/management/students/${state.duplicateStudentId}`} className="underline">
+                View existing student
+              </Link>
+            </>
+          )}
+        </p>
+      )}
 
-      <div className="flex items-center gap-4 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+      <input type="hidden" name="confirmed" value={state?.needsConfirmation ? "true" : "false"} />
+
+      <div className="flex items-center gap-4 border-t border-slate-200 pt-4 dark:border-slate-800">
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
         >
-          {pending ? "Saving..." : submitLabel}
+          {pending ? "Saving..." : state?.needsConfirmation ? "Create Anyway" : submitLabel}
         </button>
-        <Link href="/management/students" className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50">
+        <Link href="/management/students" className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50">
           Cancel
         </Link>
       </div>

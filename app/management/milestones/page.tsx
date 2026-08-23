@@ -21,10 +21,10 @@ export default async function ManagementMilestonesPage(
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
           Milestone Templates
         </h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           {error ? "—" : `${templates.length.toLocaleString()} template${templates.length === 1 ? "" : "s"} — the configurable MS/MPhil and PhD degree-completion roadmap`}
         </p>
       </div>

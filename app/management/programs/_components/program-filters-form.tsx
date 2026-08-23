@@ -7,8 +7,8 @@ import {
 } from "@/lib/management/programs";
 
 const fieldClasses =
-  "rounded-md border border-zinc-300 bg-transparent px-3 py-1.5 text-sm text-zinc-900 outline-none focus:border-zinc-500 dark:border-zinc-700 dark:text-zinc-50";
-const labelClasses = "text-xs font-medium text-zinc-500 dark:text-zinc-400";
+  "rounded-md border border-slate-300 bg-transparent px-3 py-1.5 text-sm text-slate-900 outline-none focus:border-slate-500 dark:border-slate-700 dark:text-slate-50";
+const labelClasses = "text-xs font-medium text-slate-500 dark:text-slate-400";
 
 const DEGREE_LEVEL_LABELS: Record<(typeof DEGREE_LEVELS)[number], string> = {
   diploma: "Diploma",
@@ -28,7 +28,7 @@ export function ProgramFiltersForm({
   return (
     <form
       method="GET"
-      className="flex flex-wrap items-end gap-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950"
+      className="flex flex-wrap items-end gap-3 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950"
     >
       <div className="flex min-w-[200px] flex-1 flex-col gap-1">
         <label htmlFor="q" className={labelClasses}>
@@ -104,13 +104,13 @@ export function ProgramFiltersForm({
       <div className="flex gap-2">
         <button
           type="submit"
-          className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-600 dark:hover:bg-brand-500"
         >
           Apply
         </button>
         <Link
           href="/management/programs"
-          className="rounded-md border border-zinc-300 px-4 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+          className="rounded-md border border-slate-300 px-4 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-900"
         >
           Reset
         </Link>

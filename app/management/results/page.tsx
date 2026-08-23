@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireRole } from "@/lib/supabase/dal";
 import {
   getResults,
@@ -25,14 +26,17 @@ export default async function ManagementResultsPage(
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
           Results
         </h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           {error
             ? "—"
             : `${count.toLocaleString()} result${count === 1 ? "" : "s"} found`}
         </p>
+        <Link href="/management/grading-scale" className="text-sm text-slate-500 underline hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50">
+          Grading Scale →
+        </Link>
       </div>
 
       <ResultFiltersForm filters={filters} />

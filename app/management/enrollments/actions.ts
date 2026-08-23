@@ -5,13 +5,11 @@ import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/supabase/dal";
 import {
   ENROLLMENT_STATUSES,
-  createEnrollment,
   updateEnrollmentStatus,
-  getActiveEnrollmentCount,
   getEnrollmentById,
+  enrollStudentInOffering,
   type EnrollmentStatus,
 } from "@/lib/management/enrollments";
-import { getCourseOfferingById } from "@/lib/management/course-offerings";
 import { getStudentById } from "@/lib/management/students";
 import { notifyIfLinked } from "@/lib/management/notifications";
 import { toUserMessage } from "@/lib/management/mutation-errors";
@@ -40,36 +38,8 @@ export async function createEnrollmentAction(
   const courseOfferingId = String(formData.get("course_offering_id") ?? "").trim();
   if (!UUID_RE.test(courseOfferingId)) return { error: "Please select a course offering." };
 
-  // Application-level checks the database can't express as a constraint —
-  // duplicate-active-enrollment is still enforced at the database level
-  // (uq_enrollments_active_student_offering) as the actual final guard.
-  const student = await getStudentById(studentId);
-  if (!student) return { error: "Selected student could not be found." };
-  if (student.status !== "active") {
-    return { error: `This student's status is "${student.status}" — only active students can be enrolled.` };
-  }
-
-  const offering = await getCourseOfferingById(courseOfferingId);
-  if (!offering) return { error: "Selected course offering could not be found." };
-  if (offering.status === "cancelled") {
-    return { error: "This course offering has been cancelled and cannot accept new enrollments." };
-  }
-
-  if (offering.capacity != null) {
-    const activeCount = await getActiveEnrollmentCount(courseOfferingId);
-    if (activeCount >= offering.capacity) {
-      return { error: `This offering is at capacity (${offering.capacity}/${offering.capacity}).` };
-    }
-  }
-
-  const { error } = await createEnrollment({ student_id: studentId, course_offering_id: courseOfferingId });
-  if (error) return { error: toUserMessage(error, CONSTRAINT_MESSAGES) };
-
-  await notifyIfLinked(
-    student.profile_id,
-    "Course Enrollment",
-    `You have been enrolled in ${offering.course.code} — ${offering.course.name} (${offering.semester.academic_year} ${offering.semester.name}).`
-  );
+  const result = await enrollStudentInOffering(studentId, courseOfferingId);
+  if (!result.success) return { error: result.error };
 
   revalidatePath("/management/enrollments");
   redirect("/management/enrollments");

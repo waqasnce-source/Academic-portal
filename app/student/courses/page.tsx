@@ -17,8 +17,8 @@ export default async function StudentCoursesPage() {
 
   if (!studentId) {
     return (
-      <div className="rounded-lg border border-dashed border-zinc-300 px-4 py-12 text-center dark:border-zinc-700">
-        <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">No academic record found</p>
+      <div className="rounded-lg border border-dashed border-slate-300 px-4 py-12 text-center dark:border-slate-700">
+        <p className="text-sm font-medium text-slate-700 dark:text-slate-300">No academic record found</p>
       </div>
     );
   }
@@ -32,8 +32,8 @@ export default async function StudentCoursesPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">My Courses</h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">Coursework enrollment history</p>
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">My Courses</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Coursework enrollment history</p>
       </div>
 
       <CourseGroup title="Current" enrollments={current} emptyText="No current enrollments." />
@@ -54,39 +54,39 @@ function CourseGroup({
 }) {
   return (
     <section className="space-y-3">
-      <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+      <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
         {title} ({enrollments.length})
       </h2>
       {enrollments.length === 0 ? (
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">{emptyText}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{emptyText}</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-          <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
-            <thead className="bg-zinc-50 dark:bg-zinc-900">
+        <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+          <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+            <thead className="bg-slate-50 dark:bg-slate-900">
               <tr>
-                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Course</th>
-                <th className="whitespace-nowrap px-4 py-2.5 text-right font-medium text-zinc-500 dark:text-zinc-400">CH</th>
-                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Semester</th>
-                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Status</th>
-                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Marks / Grade</th>
+                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Course</th>
+                <th className="whitespace-nowrap px-4 py-2.5 text-right font-medium text-slate-500 dark:text-slate-400">CH</th>
+                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Semester</th>
+                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Status</th>
+                <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Marks / Grade</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
               {enrollments.map((e) => (
                 <tr key={e.enrollmentId}>
-                  <td className="whitespace-nowrap px-4 py-2.5 text-zinc-700 dark:text-zinc-300">
+                  <td className="whitespace-nowrap px-4 py-2.5 text-slate-700 dark:text-slate-300">
                     {e.course.code} — {e.course.name}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2.5 text-right text-zinc-500 dark:text-zinc-400">
+                  <td className="whitespace-nowrap px-4 py-2.5 text-right text-slate-500 dark:text-slate-400">
                     {e.course.credit_hours}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+                  <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                     {formatAcademicDate(e.semesterStartDate)}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2.5">
                     <StatusBadge label={e.status.replace(/_/g, " ")} tone={e.status === "completed" ? "success" : "info"} />
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+                  <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                     {e.result
                       ? e.result.published_at
                         ? `${e.result.marks ?? "—"} ${e.result.grade ? `(${e.result.grade})` : ""}`

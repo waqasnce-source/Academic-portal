@@ -24,13 +24,13 @@ export default async function StudentProgressPage() {
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/student" className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50">
+        <Link href="/student" className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50">
           ← Dashboard
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
           Academic Progress Timeline
         </h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           {milestones.length} milestone{milestones.length === 1 ? "" : "s"} in your degree-completion roadmap
         </p>
       </div>
@@ -43,18 +43,18 @@ export default async function StudentProgressPage() {
             <li key={m.id}>
               <Link
                 href={`/student/progress/${m.id}`}
-                className="block rounded-lg border border-zinc-200 bg-white p-4 hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-700"
+                className="block rounded-lg border border-slate-200 bg-white p-4 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-slate-700"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       Step {m.sequence_no}
                       {m.category ? ` · ${m.category}` : ""}
                       {!m.required ? " · Optional" : ""}
                     </p>
-                    <p className="mt-0.5 font-medium text-zinc-900 dark:text-zinc-50">{m.title}</p>
+                    <p className="mt-0.5 font-medium text-slate-900 dark:text-slate-50">{m.title}</p>
                     {(m.record?.due_date || m.target_semester) && (
-                      <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                         {m.record?.due_date
                           ? `Due ${formatAcademicDate(m.record.due_date)}`
                           : m.target_semester

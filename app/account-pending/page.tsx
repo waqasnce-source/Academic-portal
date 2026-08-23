@@ -12,15 +12,15 @@ export default async function AccountPendingPage() {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4 text-center">
-      <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+      <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-50">
         Account pending setup
       </h1>
-      <p className="mt-2 max-w-md text-sm text-zinc-500 dark:text-zinc-400">
+      <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
         Your account has been created but is not yet linked to a profile.
         Contact an administrator to finish setting up your access.
       </p>
       <form action={logout} className="mt-6">
-        <button className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50">
+        <button className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50">
           Sign out
         </button>
       </form>

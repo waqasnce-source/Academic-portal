@@ -5,7 +5,7 @@ export function ResearchProjectFiltersForm({ filters }: { filters: ResearchProje
   return (
     <form
       method="GET"
-      className="flex flex-wrap items-end gap-4 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950"
+      className="flex flex-wrap items-end gap-4 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950"
     >
       <div className="space-y-1">
         <label htmlFor="q" className={labelClasses}>
@@ -22,7 +22,7 @@ export function ResearchProjectFiltersForm({ filters }: { filters: ResearchProje
       </div>
       <button
         type="submit"
-        className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+        className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-900"
       >
         Search
       </button>

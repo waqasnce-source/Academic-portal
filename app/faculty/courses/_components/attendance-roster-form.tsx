@@ -30,27 +30,27 @@ export function AttendanceRosterForm({
 
   if (roster.length === 0) {
     return (
-      <p className="text-sm text-zinc-500 dark:text-zinc-400">No actively enrolled students for this offering yet.</p>
+      <p className="text-sm text-slate-500 dark:text-slate-400">No actively enrolled students for this offering yet.</p>
     );
   }
 
   return (
     <form action={formAction} className="space-y-4">
-      <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-        <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
-          <thead className="bg-zinc-50 dark:bg-zinc-900">
+      <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+        <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+          <thead className="bg-slate-50 dark:bg-slate-900">
             <tr>
-              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Student</th>
-              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Status</th>
-              <th className="px-4 py-2.5 text-left font-medium text-zinc-500 dark:text-zinc-400">Remarks</th>
+              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Student</th>
+              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Status</th>
+              <th className="px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">Remarks</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
             {roster.map((r) => (
               <tr key={r.enrollmentId}>
                 <td className="whitespace-nowrap px-4 py-2.5">
-                  <div className="font-medium text-zinc-900 dark:text-zinc-50">{r.student.name}</div>
-                  <div className="text-xs text-zinc-500 dark:text-zinc-400">{r.student.studentNumber}</div>
+                  <div className="font-medium text-slate-900 dark:text-slate-50">{r.student.name}</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400">{r.student.studentNumber}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2.5">
                   <select
@@ -85,7 +85,7 @@ export function AttendanceRosterForm({
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-600 dark:hover:bg-brand-500"
       >
         {pending ? "Saving..." : "Save Attendance"}
       </button>

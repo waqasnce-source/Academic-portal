@@ -33,16 +33,29 @@ interface ParsedProgramInput {
   code: string;
   name: string;
   degree_level: DegreeLevel;
-  duration_years: number;
+  duration_years: number | null;
+  duration_verified: boolean;
   status: ProgramStatus;
 }
 
+/**
+ * duration_years is intentionally optional: the academic-catalogue phase
+ * relaxed it to nullable specifically because no source-confirmed
+ * duration exists for most programs yet (see
+ * supabase/migrations/20260818130000_academic_catalogue_schema.sql). An
+ * empty field means "not yet entered", not zero or invalid — only a
+ * non-empty value is validated as a positive number. duration_verified is
+ * a plain checkbox; it can only ever be true if a duration was also
+ * entered (the form disables it otherwise, but this is re-checked here
+ * too rather than trusted from the client).
+ */
 function parseProgramInput(formData: FormData): ParsedProgramInput | { error: string } {
   const departmentId = String(formData.get("department_id") ?? "").trim();
   const code = String(formData.get("code") ?? "").trim();
   const name = String(formData.get("name") ?? "").trim();
   const rawDegreeLevel = String(formData.get("degree_level") ?? "").trim();
   const rawDuration = String(formData.get("duration_years") ?? "").trim();
+  const durationVerified = formData.get("duration_verified") === "on";
   const rawStatus = String(formData.get("status") ?? "").trim();
 
   if (!UUID_RE.test(departmentId)) return { error: "Please select a department." };
@@ -54,9 +67,13 @@ function parseProgramInput(formData: FormData): ParsedProgramInput | { error: st
     return { error: "Degree level must be Diploma, Bachelor, Master, or PhD." };
   }
 
-  const duration = Number(rawDuration);
-  if (!Number.isFinite(duration) || duration <= 0) {
-    return { error: "Duration must be a number greater than 0." };
+  let duration: number | null = null;
+  if (rawDuration) {
+    const parsed = Number(rawDuration);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      return { error: "Duration must be a number greater than 0, or left blank if not yet confirmed." };
+    }
+    duration = Math.round(parsed * 10) / 10;
   }
 
   if (!(PROGRAM_STATUSES as readonly string[]).includes(rawStatus)) {
@@ -68,7 +85,8 @@ function parseProgramInput(formData: FormData): ParsedProgramInput | { error: st
     code,
     name,
     degree_level: rawDegreeLevel as DegreeLevel,
-    duration_years: Math.round(duration * 10) / 10,
+    duration_years: duration,
+    duration_verified: duration !== null && durationVerified,
     status: rawStatus as ProgramStatus,
   };
 }

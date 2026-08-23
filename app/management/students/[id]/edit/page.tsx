@@ -20,10 +20,10 @@ export default async function EditStudentPage(props: PageProps<"/management/stud
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/management/students" className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50">
+        <Link href="/management/students" className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50">
           ← Students
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Edit Student</h1>
+        <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">Edit Student</h1>
         {!student.profile_id && (
           <p className="mt-1 text-sm text-amber-600 dark:text-amber-400">
             No Supabase Auth account is linked to this record yet — account linking is not built in this phase.

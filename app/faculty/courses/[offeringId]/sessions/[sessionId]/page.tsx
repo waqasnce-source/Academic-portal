@@ -37,14 +37,14 @@ export default async function FacultySessionAttendancePage(
       <div>
         <Link
           href={`/faculty/courses/${offeringId}`}
-          className="text-sm text-zinc-500 underline hover:text-zinc-900 dark:hover:text-zinc-50"
+          className="text-sm text-slate-500 underline hover:text-slate-900 dark:hover:text-slate-50"
         >
           ← {offering.course.code} — {offering.course.name}
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
           Attendance — {formatDate(session.class_date)}
         </h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           {session.start_time.slice(0, 5)}–{session.end_time.slice(0, 5)} · {session.session_type}
           {session.room ? ` · ${session.room}` : ""}
         </p>

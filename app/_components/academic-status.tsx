@@ -50,17 +50,18 @@ export function MilestoneStatusBadge({ status }: { status: StudentMilestoneStatu
   return <StatusBadge label={status.replace(/_/g, " ")} tone={MILESTONE_STATUS_TONE[status]} />;
 }
 
-export function ProgressBar({ percentage }: { percentage: number }) {
+/** `label` defaults to the original milestone-progress caption so every existing caller (student/faculty/management student pages) is unaffected; pass an explicit label for any other percentage (e.g. coursework CH progress). */
+export function ProgressBar({ percentage, label }: { percentage: number; label?: string }) {
   const clamped = Math.max(0, Math.min(100, percentage));
   return (
     <div className="space-y-1">
-      <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-900">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-900">
         <div
-          className="h-full rounded-full bg-zinc-900 dark:bg-zinc-50"
+          className="h-full rounded-full bg-brand-700 dark:bg-brand-400"
           style={{ width: `${clamped}%` }}
         />
       </div>
-      <p className="text-xs text-zinc-500 dark:text-zinc-400">{clamped}% of required milestones complete</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400">{label ?? `${clamped}% of required milestones complete`}</p>
     </div>
   );
 }

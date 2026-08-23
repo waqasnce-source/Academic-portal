@@ -376,6 +376,20 @@ export interface StudentInput {
  * (`has_role('management')`). profile_id is never set here — linking an
  * account is a separate, not-yet-built action (see Phase 6 report).
  */
+/** Email has no DB uniqueness constraint (unlike student_number), so this pre-check is the only duplicate-detection available for it — used by the create form to offer "use existing student?" instead of silently creating a second record for the same person. */
+export async function findStudentByEmail(email: string): Promise<{ id: string; student_number: string; name: string } | null> {
+  const trimmed = email.trim();
+  if (!trimmed) return null;
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("students")
+    .select("id, student_number, name")
+    .ilike("email", trimmed)
+    .limit(1)
+    .maybeSingle();
+  return data;
+}
+
 export async function createStudent(input: StudentInput) {
   const supabase = await createClient();
   return supabase.from("students").insert(input).select("id").single();

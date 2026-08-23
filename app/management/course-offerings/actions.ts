@@ -10,9 +10,12 @@ import {
   updateCourseOffering,
   assignFacultyToOffering,
   removeFacultyAssignment,
+  getOfferingsForCourseInSemester,
   type OfferingStatus,
   type CourseOfferingFacultyRole,
 } from "@/lib/management/course-offerings";
+import { getCourseById } from "@/lib/management/courses";
+import { searchEnrollableStudents, bulkEnrollStudents, type StudentPickerRow, type BulkEnrollOutcome } from "@/lib/management/enrollments";
 import { toUserMessage } from "@/lib/management/mutation-errors";
 import { UUID_RE } from "@/lib/management/query-params";
 
@@ -29,6 +32,8 @@ const CONSTRAINT_MESSAGES: Record<string, string> = {
 
 export interface CourseOfferingFormState {
   error?: string;
+  /** Set when the error is actually just an informational "this course already has an offering here" notice — the form re-shows itself with a "Create Anyway" confirm step rather than blocking outright (multiple sections of the same course in one semester are legitimate). */
+  needsConfirmation?: boolean;
 }
 
 function parseOfferingInput(formData: FormData):
@@ -65,6 +70,24 @@ export async function createCourseOfferingAction(
 
   const parsed = parseOfferingInput(formData);
   if ("error" in parsed) return { error: parsed.error };
+
+  // Informational-only duplicate check: multiple sections of the same
+  // course in one semester are legitimate (the DB's real uniqueness guard
+  // is course+semester+section, not course+semester alone), so this never
+  // hard-blocks — it just asks for a second, explicit confirmation before
+  // creating what might be an accidental repeat.
+  const confirmed = String(formData.get("confirmed") ?? "") === "true";
+  if (!confirmed) {
+    const existingOfferings = await getOfferingsForCourseInSemester(parsed.course_id, parsed.semester_id);
+    if (existingOfferings.length > 0) {
+      const course = await getCourseById(parsed.course_id);
+      const sections = existingOfferings.map((o) => `Section ${o.section} (${o.status})`).join(", ");
+      return {
+        error: `${course?.code ?? "This course"} is already offered in this semester: ${sections}. Click "Create Anyway" to add another section.`,
+        needsConfirmation: true,
+      };
+    }
+  }
 
   const { error, data } = await createCourseOffering(parsed);
   if (error || !data) return { error: toUserMessage(error!, CONSTRAINT_MESSAGES) };
@@ -129,4 +152,25 @@ export async function removeFacultyAssignmentAction(offeringId: string, assignme
   await removeFacultyAssignment(assignmentId);
   revalidatePath(`/management/course-offerings/${offeringId}`);
   revalidatePath("/management/course-offerings");
+}
+
+// ---- Bulk enrollment ("Manage Students" panel) ----
+
+export async function searchEnrollableStudentsAction(offeringId: string, query: string): Promise<StudentPickerRow[]> {
+  await requireRole("management");
+  if (!UUID_RE.test(offeringId)) return [];
+  return searchEnrollableStudents(offeringId, query);
+}
+
+export async function bulkEnrollStudentsAction(offeringId: string, studentIds: string[]): Promise<BulkEnrollOutcome> {
+  await requireRole("management");
+  if (!UUID_RE.test(offeringId)) return { enrolled: 0, failed: studentIds.map((studentId) => ({ studentId, error: "Invalid offering." })) };
+
+  const validIds = studentIds.filter((id) => UUID_RE.test(id));
+  const outcome = await bulkEnrollStudents(offeringId, validIds);
+
+  revalidatePath(`/management/course-offerings/${offeringId}`);
+  revalidatePath("/management/enrollments");
+  revalidatePath("/management/academic-sessions");
+  return outcome;
 }

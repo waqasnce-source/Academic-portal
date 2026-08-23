@@ -109,6 +109,7 @@ export interface SuperviseeRow {
   student: {
     id: string;
     student_number: string;
+    admission_year: number;
     profile: { full_name: string; email: string } | null;
     program: {
       id: string;
@@ -122,20 +123,29 @@ export interface SuperviseeRow {
 }
 
 /**
- * For the Faculty dashboard/students list: every student a given faculty
- * member currently actively supervises or co-supervises, with enough of
- * the program/discipline/specialization chain embedded to support the
- * Phase 4 filter requirements (program, discipline, specialization)
- * without a second query per student. Relies entirely on RLS
+ * For the Faculty dashboard/students list (and the Management faculty
+ * hub's supervision section): every student a given faculty member
+ * supervises or co-supervises, with enough of the program/discipline/
+ * specialization chain embedded to support the Phase 4 filter
+ * requirements (program, discipline, specialization) without a second
+ * query per student. Relies entirely on RLS
  * (supervisor_assignments_select_authenticated) for authorization — this
  * function does not itself check the caller's identity, same convention
  * as every lib/management/*.ts read function.
+ *
+ * `includeInactive` defaults to false (active assignments only) so both
+ * existing callers (the faculty self-service portal) are unaffected;
+ * pass true for the Management faculty hub's "Show historical
+ * supervision" toggle, which must not hide a genuinely active
+ * relationship just because its assigned_date predates the currently
+ * selected teaching session — that filter never applies here at all.
  */
-export async function getActiveSuperviseesForFaculty(
-  facultyId: string
+export async function getSuperviseesForFaculty(
+  facultyId: string,
+  includeInactive = false
 ): Promise<SuperviseeRow[]> {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("supervisor_assignments")
     .select(
       `
@@ -146,18 +156,20 @@ export async function getActiveSuperviseesForFaculty(
       student:students (
         id,
         student_number,
+        admission_year,
         profile:profiles ( full_name, email ),
         program:programs ( id, code, name, degree_level, department:departments ( id, name ) ),
         specialization:specializations ( id, name )
       )
     `
     )
-    .eq("faculty_id", facultyId)
-    .eq("status", "active")
-    .order("assigned_date", { ascending: false });
+    .eq("faculty_id", facultyId);
+  if (!includeInactive) query = query.eq("status", "active");
+
+  const { data, error } = await query.order("assigned_date", { ascending: false });
 
   if (error) {
-    console.error("getActiveSuperviseesForFaculty failed:", error);
+    console.error("getSuperviseesForFaculty failed:", error);
     return [];
   }
   return (data ?? []) as unknown as SuperviseeRow[];
@@ -168,14 +180,18 @@ export interface SuperviseeWithStatus extends SuperviseeRow {
 }
 
 /**
- * Every active supervisee plus their computed academic status, for the
- * Faculty dashboard/students list. Computes computeAcademicStatus() per
- * student (via getStudentAcademicStatus) rather than caching/duplicating
- * that logic — acceptable N+1 fan-out at the current, small per-faculty
- * supervisee scale; revisit if that assumption stops holding.
+ * Every supervisee (active-only by default) plus their computed academic
+ * status, for the Faculty dashboard/students list and the Management
+ * faculty hub. Computes computeAcademicStatus() per student (via
+ * getStudentAcademicStatus) rather than caching/duplicating that logic —
+ * acceptable N+1 fan-out at the current, small per-faculty supervisee
+ * scale; revisit if that assumption stops holding.
  */
-export async function getSuperviseesWithStatus(facultyId: string): Promise<SuperviseeWithStatus[]> {
-  const supervisees = await getActiveSuperviseesForFaculty(facultyId);
+export async function getSuperviseesWithStatus(
+  facultyId: string,
+  includeInactive = false
+): Promise<SuperviseeWithStatus[]> {
+  const supervisees = await getSuperviseesForFaculty(facultyId, includeInactive);
 
   const statuses = await Promise.all(
     supervisees.map((s) => getStudentAcademicStatus(s.student.id))

@@ -11,6 +11,7 @@ import {
 } from "@/lib/management/supervisor-assignments";
 import { toUserMessage } from "@/lib/management/mutation-errors";
 import { UUID_RE } from "@/lib/management/query-params";
+import { syncStudentMilestoneByCode } from "@/lib/academic/milestone-sync";
 
 const CONSTRAINT_MESSAGES: Record<string, string> = {
   uq_supervisor_assignments_one_active_supervisor:
@@ -63,7 +64,22 @@ export async function createSupervisorAssignmentAction(
   const { error } = await createSupervisorAssignment(parsed);
   if (error) return { error: toUserMessage(error, CONSTRAINT_MESSAGES) };
 
+  // SUPERVISOR_APPROVAL milestone sync: previously identified as a real,
+  // documented gap (structured supervisor_assignments data existed but
+  // never reached student_milestones). Only the primary 'supervisor' role
+  // maps to this milestone — a co-supervisor assignment doesn't represent
+  // "Supervisor Approval" on its own. Uses the exact same
+  // syncStudentMilestoneByCode() mechanism every other workflow action in
+  // this app already uses; no new sync system.
+  if (parsed.role === "supervisor") {
+    await syncStudentMilestoneByCode(parsed.student_id, ["SUPERVISOR_APPROVAL"], {
+      status: "approved",
+      completed_date: parsed.start_date ?? new Date().toISOString().slice(0, 10),
+    });
+  }
+
   revalidatePath("/management/supervisor-assignments");
+  revalidatePath(`/management/academic-progress/${parsed.student_id}`);
   redirect("/management/supervisor-assignments");
 }
 

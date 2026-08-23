@@ -17,7 +17,9 @@ export interface ProgramRow {
   code: string;
   name: string;
   degree_level: DegreeLevel;
-  duration_years: number;
+  /** Nullable: no source-confirmed duration exists until an administrator enters and verifies one. */
+  duration_years: number | null;
+  duration_verified: boolean;
   status: ProgramStatus;
   created_at: string;
   department: {
@@ -42,7 +44,8 @@ interface RawProgramRow {
   code: string;
   name: string;
   degree_level: DegreeLevel;
-  duration_years: number;
+  duration_years: number | null;
+  duration_verified: boolean;
   status: ProgramStatus;
   created_at: string;
   department: { id: string; code: string; name: string };
@@ -142,6 +145,7 @@ const PROGRAM_SELECT = `
   name,
   degree_level,
   duration_years,
+  duration_verified,
   status,
   created_at,
   department:departments!inner ( id, code, name ),
@@ -156,6 +160,7 @@ function normalize(row: RawProgramRow): ProgramRow {
     name: row.name,
     degree_level: row.degree_level,
     duration_years: row.duration_years,
+    duration_verified: row.duration_verified,
     status: row.status,
     created_at: row.created_at,
     department: row.department,
@@ -261,7 +266,8 @@ export interface ProgramDetail {
   code: string;
   name: string;
   degree_level: DegreeLevel;
-  duration_years: number;
+  duration_years: number | null;
+  duration_verified: boolean;
   status: ProgramStatus;
 }
 
@@ -270,7 +276,8 @@ export interface ProgramInput {
   code: string;
   name: string;
   degree_level: DegreeLevel;
-  duration_years: number;
+  duration_years: number | null;
+  duration_verified: boolean;
   status: ProgramStatus;
 }
 
@@ -279,7 +286,7 @@ export async function getProgramById(id: string): Promise<ProgramDetail | null> 
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("programs")
-    .select("id, department_id, code, name, degree_level, duration_years, status")
+    .select("id, department_id, code, name, degree_level, duration_years, duration_verified, status")
     .eq("id", id)
     .single();
 
