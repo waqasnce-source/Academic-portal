@@ -16,6 +16,7 @@ export interface ExtensionApplicationRow {
   status: ExtensionApplicationStatus;
   approval_date: string | null;
   student: {
+    name: string;
     student_number: string;
     profile: { full_name: string } | null;
   };
@@ -34,7 +35,7 @@ const EXTENSION_SELECT = `
   requested_to,
   status,
   approval_date,
-  student:students!inner ( student_number, profile:profiles ( full_name ) )
+  student:students!inner ( name, student_number, profile:profiles ( full_name ) )
 `;
 
 type RawSearchParams = Record<string, string | string[] | undefined>;
@@ -117,7 +118,7 @@ export interface ExtensionApplicationDetail {
   recommendation: string | null;
   approval_date: string | null;
   remarks: string | null;
-  student: { student_number: string; profile: { full_name: string } | null };
+  student: { name: string; student_number: string; profile: { full_name: string } | null };
 }
 
 const EXTENSION_DETAIL_SELECT = `
@@ -133,7 +134,7 @@ const EXTENSION_DETAIL_SELECT = `
   recommendation,
   approval_date,
   remarks,
-  student:students!inner ( student_number, profile:profiles ( full_name ) )
+  student:students!inner ( name, student_number, profile:profiles ( full_name ) )
 `;
 
 export async function getExtensionApplicationById(id: string): Promise<ExtensionApplicationDetail | null> {

@@ -33,7 +33,7 @@ export default async function ManagementDocumentReviewPage(
           {submission.requirement.document_name}
         </h1>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          {submission.student.profile?.full_name ?? submission.student.student_number} · v{submission.version}
+          {submission.student.profile?.full_name ?? submission.student.name} · v{submission.version}
         </p>
       </div>
 

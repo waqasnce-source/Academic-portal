@@ -38,7 +38,7 @@ export function DocumentSubmissionsTable({ submissions }: { submissions: Documen
           {submissions.map((s) => (
             <tr key={s.id}>
               <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-900 dark:text-slate-50">
-                {s.student.profile?.full_name ?? s.student.student_number}
+                {s.student.profile?.full_name ?? s.student.name}
               </td>
               <td className="whitespace-nowrap px-4 py-2.5 text-slate-700 dark:text-slate-300">{s.requirement.document_name}</td>
               <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">v{s.version}</td>

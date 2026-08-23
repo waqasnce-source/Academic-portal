@@ -24,7 +24,7 @@ export default async function ManagementExtensionDetailPage(
           ← Extension Applications
         </Link>
         <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
-          {application.student.profile?.full_name ?? application.student.student_number}
+          {application.student.profile?.full_name ?? application.student.name}
         </h1>
       </div>
 

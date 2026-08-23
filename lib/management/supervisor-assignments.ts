@@ -20,6 +20,7 @@ export interface SupervisorAssignmentRow {
   remarks: string | null;
   student: {
     id: string;
+    name: string;
     student_number: string;
     profile: { full_name: string } | null;
   };
@@ -31,7 +32,7 @@ export interface SupervisorAssignmentRow {
 }
 
 interface RawSupervisorAssignmentRow extends Omit<SupervisorAssignmentRow, "student" | "faculty"> {
-  student: { id: string; student_number: string; profile: { full_name: string } | null };
+  student: { id: string; name: string; student_number: string; profile: { full_name: string } | null };
   faculty: { id: string; name: string; designation: string };
 }
 
@@ -93,7 +94,7 @@ const SUPERVISOR_ASSIGNMENT_SELECT = `
   start_date,
   end_date,
   remarks,
-  student:students!inner ( id, student_number, profile:profiles ( full_name ) ),
+  student:students!inner ( id, name, student_number, profile:profiles ( full_name ) ),
   faculty:faculty!inner ( id, name, designation )
 `;
 

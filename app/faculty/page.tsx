@@ -143,7 +143,7 @@ export default async function FacultyPage() {
                   <tr key={s.id}>
                     <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-900 dark:text-slate-50">
                       <Link href={`/faculty/students/${s.student.id}`} className="hover:underline">
-                        {s.student.profile?.full_name ?? s.student.student_number}
+                        {s.student.profile?.full_name ?? s.student.name}
                       </Link>
                     </td>
                     <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">

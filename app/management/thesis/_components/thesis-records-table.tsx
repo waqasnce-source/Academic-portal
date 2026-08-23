@@ -40,7 +40,7 @@ export function ThesisRecordsTable({ records }: { records: ThesisRecordRow[] }) 
           {records.map((r) => (
             <tr key={r.id}>
               <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-900 dark:text-slate-50">
-                {r.student.profile?.full_name ?? r.student.student_number}
+                {r.student.profile?.full_name ?? r.student.name}
               </td>
               <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                 {r.student.program?.name ?? "—"}

@@ -108,6 +108,7 @@ export interface SuperviseeRow {
   assigned_date: string;
   student: {
     id: string;
+    name: string;
     student_number: string;
     admission_year: number;
     profile: { full_name: string; email: string } | null;
@@ -155,6 +156,7 @@ export async function getSuperviseesForFaculty(
       assigned_date,
       student:students (
         id,
+        name,
         student_number,
         admission_year,
         profile:profiles ( full_name, email ),

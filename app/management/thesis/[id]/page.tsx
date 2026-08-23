@@ -44,7 +44,7 @@ export default async function ManagementThesisDetailPage(props: PageProps<"/mana
           ← Thesis Records
         </Link>
         <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
-          {thesis.student.profile?.full_name ?? thesis.student.student_number}
+          {thesis.student.profile?.full_name ?? thesis.student.name}
         </h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">{thesis.thesis_title ?? "No title recorded yet"}</p>
       </div>

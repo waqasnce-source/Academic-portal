@@ -44,7 +44,7 @@ export function ExtensionsTable({
           {extensions.map((e) => (
             <tr key={e.id}>
               <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-900 dark:text-slate-50">
-                {e.student.profile?.full_name ?? e.student.student_number}
+                {e.student.profile?.full_name ?? e.student.name}
               </td>
               <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">{formatDate(e.application_date)}</td>
               <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">

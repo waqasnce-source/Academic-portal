@@ -16,6 +16,7 @@ export interface ThesisRecordRow {
   status: string | null;
   clearance_status: string | null;
   student: {
+    name: string;
     student_number: string;
     profile: { full_name: string } | null;
     program: { name: string; degree_level: string } | null;
@@ -29,6 +30,7 @@ const THESIS_RECORD_SELECT = `
   status,
   clearance_status,
   student:students!inner (
+    name,
     student_number,
     profile:profiles ( full_name ),
     program:programs ( name, degree_level )
@@ -64,7 +66,7 @@ export interface ThesisRecordDetail {
   plagiarism_certificate_path: string | null;
   clearance_status: string | null;
   remarks: string | null;
-  student: { id: string; student_number: string; profile: { full_name: string } | null };
+  student: { id: string; name: string; student_number: string; profile: { full_name: string } | null };
 }
 
 const THESIS_RECORD_DETAIL_SELECT = `
@@ -77,7 +79,7 @@ const THESIS_RECORD_DETAIL_SELECT = `
   plagiarism_certificate_path,
   clearance_status,
   remarks,
-  student:students!inner ( id, student_number, profile:profiles ( full_name ) )
+  student:students!inner ( id, name, student_number, profile:profiles ( full_name ) )
 `;
 
 export async function getThesisRecordById(id: string): Promise<ThesisRecordDetail | null> {

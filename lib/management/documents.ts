@@ -46,7 +46,7 @@ export interface DocumentSubmissionRow {
   status: StudentMilestoneStatus;
   submitted_at: string;
   verified_at: string | null;
-  student: { student_number: string; profile: { full_name: string } | null };
+  student: { name: string; student_number: string; profile: { full_name: string } | null };
   requirement: { document_name: string };
 }
 
@@ -57,7 +57,7 @@ const DOCUMENT_SUBMISSION_SELECT = `
   status,
   submitted_at,
   verified_at,
-  student:students!inner ( student_number, profile:profiles ( full_name ) ),
+  student:students!inner ( name, student_number, profile:profiles ( full_name ) ),
   requirement:document_requirements!inner ( document_name )
 `;
 
@@ -73,7 +73,7 @@ export interface DocumentSubmissionDetail {
   verified_at: string | null;
   verified_by: string | null;
   remarks: string | null;
-  student: { id: string; student_number: string; profile: { full_name: string } | null };
+  student: { id: string; name: string; student_number: string; profile: { full_name: string } | null };
   requirement: { document_name: string; description: string | null; required: boolean };
 }
 
@@ -89,7 +89,7 @@ const DOCUMENT_SUBMISSION_DETAIL_SELECT = `
   verified_at,
   verified_by,
   remarks,
-  student:students!inner ( id, student_number, profile:profiles ( full_name ) ),
+  student:students!inner ( id, name, student_number, profile:profiles ( full_name ) ),
   requirement:document_requirements!inner ( document_name, description, required )
 `;
 

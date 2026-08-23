@@ -248,7 +248,7 @@ export default async function FacultyHubPage(props: PageProps<"/management/facul
                         )}&backLabel=${encodeURIComponent(displayName)}`}
                         className="hover:underline"
                       >
-                        {s.student.profile?.full_name ?? s.student.student_number}
+                        {s.student.profile?.full_name ?? s.student.name}
                       </Link>
                       <div className="text-xs text-slate-500 dark:text-slate-400">{s.student.student_number}</div>
                     </td>
@@ -265,9 +265,16 @@ export default async function FacultyHubPage(props: PageProps<"/management/facul
                       {s.academicStatus?.currentStage ?? "—"}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2.5 text-slate-700 dark:text-slate-300">
-                      {s.academicStatus
-                        ? `${s.academicStatus.completedMilestones.length}/${s.academicStatus.requiredMilestones.length}`
-                        : "—"}
+                      {s.academicStatus ? (
+                        <>
+                          <div>{s.academicStatus.currentMilestone?.title ?? "All milestones complete"}</div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">
+                            {s.academicStatus.completedMilestones.length}/{s.academicStatus.requiredMilestones.length} completed
+                          </div>
+                        </>
+                      ) : (
+                        "—"
+                      )}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                       {SUPERVISOR_ROLE_LABELS[s.role] ?? s.role}
