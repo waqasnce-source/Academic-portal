@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import type { DegreeLevel } from "./status-enums";
 import {
@@ -157,8 +158,14 @@ const MAX_PAGES = 50;
  * where silently proceeding with incomplete data would produce a report
  * that looks complete but isn't. Callers are Server Components, so this
  * surfaces through the nearest route error.tsx boundary.
+ *
+ * Wrapped in React's cache() so multiple call sites needing overlapping
+ * data within one request (e.g. the faculty hub calling both
+ * getFacultyTeachingHistory() and getAcademicSessionsOverview()) hit the
+ * database once instead of once per call — request-scoped only, so this
+ * never returns stale data across separate page loads.
  */
-async function fetchRawOfferings(): Promise<RawOfferingRow[]> {
+const fetchRawOfferings = cache(async (): Promise<RawOfferingRow[]> => {
   const supabase = await createClient();
   const all: RawOfferingRow[] = [];
 
@@ -186,7 +193,7 @@ async function fetchRawOfferings(): Promise<RawOfferingRow[]> {
   throw new Error(
     `fetchRawOfferings: exceeded the safety ceiling of ${MAX_PAGES * FETCH_PAGE_SIZE} rows without reaching the end of the dataset — refusing to return a report silently built on a truncated dataset. This module needs a genuine database-side aggregation path before the dataset grows this large.`
   );
-}
+});
 
 /**
  * Semester-scoped counterpart to fetchRawOfferings() — filters
@@ -199,8 +206,12 @@ async function fetchRawOfferings(): Promise<RawOfferingRow[]> {
  * dashboard, the semester student overview), all of which used to pull
  * every session's offerings just to discard everything outside one
  * semester.
+ *
+ * Also wrapped in cache() — getSemesterOperations() and getSemesterDetail()
+ * both fetch this same semester's rows independently, so any request that
+ * ends up calling both is deduplicated the same way as fetchRawOfferings().
  */
-async function fetchRawOfferingsForSemester(semesterId: string): Promise<RawOfferingRow[]> {
+const fetchRawOfferingsForSemester = cache(async (semesterId: string): Promise<RawOfferingRow[]> => {
   const supabase = await createClient();
   const { data, error } = await supabase.from("course_offerings").select(RAW_SELECT).eq("semester_id", semesterId);
 
@@ -209,7 +220,7 @@ async function fetchRawOfferingsForSemester(semesterId: string): Promise<RawOffe
     throw new Error("Could not load course offering data for this semester.");
   }
   return (data ?? []) as unknown as RawOfferingRow[];
-}
+});
 
 function facultyDisplayName(f: { name: string; profile: { full_name: string } | null }): string {
   return f.profile?.full_name ?? f.name;
