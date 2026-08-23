@@ -4,10 +4,7 @@ import {
   type FacultyFilters,
   type FacultyFilterOptions,
 } from "@/lib/management/faculty";
-
-const fieldClasses =
-  "rounded-md border border-slate-300 bg-transparent px-3 py-1.5 text-sm text-slate-900 outline-none focus:border-slate-500 dark:border-slate-700 dark:text-slate-50";
-const labelClasses = "text-xs font-medium text-slate-500 dark:text-slate-400";
+import { fieldClasses, labelClasses } from "@/app/management/_components/form-styles";
 
 /**
  * Plain GET form — no client JS required. Submitting always drops any
