@@ -39,12 +39,20 @@ export default async function AcademicSessionsPage() {
             involved. Figures are computed live from course offerings, not stored separately.
           </p>
         </div>
-        <Link
-          href="/management/reports/teaching-load"
-          className="shrink-0 rounded-md border border-slate-300 px-4 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-900"
-        >
-          Faculty Teaching
-        </Link>
+        <div className="flex shrink-0 gap-2">
+          <Link
+            href="/management/reports/teaching-load"
+            className="rounded-md border border-slate-300 px-4 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-900"
+          >
+            Faculty Teaching
+          </Link>
+          <Link
+            href="/management/semesters/new"
+            className="rounded-md bg-brand-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-600 dark:hover:bg-brand-500"
+          >
+            + Add Semester
+          </Link>
+        </div>
       </div>
 
       {sessions.length === 0 ? (
