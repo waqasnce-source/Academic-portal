@@ -17,12 +17,12 @@ export function SessionOverviewPanel({
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <Stat label="Semesters" value={session.semesters.length} />
-        <Stat label="Courses Offered" value={session.totalCourses} />
-        <Stat label="Total Credit Hours" value={session.totalCreditHours} />
-        <Stat label="Faculty Involved" value={session.facultyCount} />
-        <Stat label="Students Enrolled" value={session.studentCount} />
-        <Stat label="Disciplines" value={session.disciplines.length} />
+        <Stat label="Semesters" value={session.semesters.length} accent="border-t-brand-600" />
+        <Stat label="Courses Offered" value={session.totalCourses} accent="border-t-blue-500" />
+        <Stat label="Total Credit Hours" value={session.totalCreditHours} accent="border-t-gold-500" />
+        <Stat label="Faculty Involved" value={session.facultyCount} accent="border-t-emerald-500" />
+        <Stat label="Students Enrolled" value={session.studentCount} accent="border-t-violet-500" />
+        <Stat label="Disciplines" value={session.disciplines.length} accent="border-t-rose-500" />
       </div>
 
       {session.disciplines.length > 0 && (
@@ -36,9 +36,9 @@ export function SessionOverviewPanel({
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({ label, value, accent }: { label: string; value: number; accent: string }) {
   return (
-    <div className="rounded-md border border-slate-200 px-3 py-2 dark:border-slate-800">
+    <div className={`rounded-md border border-t-2 border-slate-200 px-3 py-2 dark:border-slate-800 ${accent}`}>
       <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
       <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">{value}</p>
     </div>

@@ -113,11 +113,7 @@ export default async function AcademicSessionsPage() {
                         >
                           {session.academicYear}
                         </Link>
-                        {session.academicYear === currentYear && (
-                          <span className="ml-2 rounded-full bg-gold-500 px-2 py-0.5 text-[10px] font-medium text-brand-950 dark:bg-gold-400">
-                            Current
-                          </span>
-                        )}
+                        <SessionBadge session={session} isCurrent={session.academicYear === currentYear} />
                         <div className="mt-0.5 flex flex-wrap gap-x-3 text-xs font-normal text-slate-500 dark:text-slate-400">
                           {session.semesters.map((s) => (
                             <span key={s.id}>
@@ -150,5 +146,37 @@ export default async function AcademicSessionsPage() {
         </>
       )}
     </div>
+  );
+}
+
+/** Color per session status, derived from its own semesters' statuses (same SEMESTER_STATUSES vocabulary the card grid uses) — never a second definition of "current", just an at-a-glance label for everything else. */
+function SessionBadge({
+  session,
+  isCurrent,
+}: {
+  session: { semesters: { status: string }[] };
+  isCurrent: boolean;
+}) {
+  if (isCurrent) {
+    return (
+      <span className="ml-2 rounded-full bg-gold-500 px-2 py-0.5 text-[10px] font-medium text-brand-950 dark:bg-gold-400">
+        Current
+      </span>
+    );
+  }
+
+  const statuses = new Set(session.semesters.map((s) => s.status));
+  const label = statuses.size === 1 ? [...statuses][0] : "mixed";
+  const classes: Record<string, string> = {
+    upcoming: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-400",
+    ongoing: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400",
+    completed: "bg-slate-100 text-slate-600 dark:bg-slate-900 dark:text-slate-400",
+    mixed: "bg-slate-100 text-slate-600 dark:bg-slate-900 dark:text-slate-400",
+  };
+
+  return (
+    <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-medium capitalize ${classes[label]}`}>
+      {label}
+    </span>
   );
 }
