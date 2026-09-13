@@ -2,6 +2,7 @@ import { requireRole } from "@/lib/supabase/dal";
 import { logout } from "@/app/login/actions";
 import { BrandHeader } from "@/app/_components/brand-header";
 import { NavLink } from "@/app/_components/nav-link";
+import { BackButton } from "@/app/_components/back-button";
 
 export default async function StudentLayout(props: LayoutProps<"/student">) {
   const profile = await requireRole("student");
@@ -25,13 +26,16 @@ export default async function StudentLayout(props: LayoutProps<"/student">) {
 
       <div className="flex flex-1 flex-col">
         <header className="flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-6 py-4 dark:border-slate-800 dark:bg-slate-950">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-50">
-              {profile.full_name}
-            </p>
-            <p className="truncate text-xs text-slate-500 dark:text-slate-400">
-              {profile.email}
-            </p>
+          <div className="flex items-center gap-4">
+            <BackButton />
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-50">
+                {profile.full_name}
+              </p>
+              <p className="truncate text-xs text-slate-500 dark:text-slate-400">
+                {profile.email}
+              </p>
+            </div>
           </div>
           <form action={logout}>
             <button className="shrink-0 text-sm text-slate-500 underline hover:text-brand-700 dark:hover:text-brand-300">

@@ -2,6 +2,7 @@ import { requireRole } from "@/lib/supabase/dal";
 import { logout } from "@/app/login/actions";
 import { BrandHeader } from "@/app/_components/brand-header";
 import { NavLink } from "@/app/_components/nav-link";
+import { BackButton } from "@/app/_components/back-button";
 import { GlobalSearchForm } from "./_components/global-search-form";
 import { MANAGEMENT_NAV_GROUPS } from "@/lib/management/modules";
 
@@ -36,7 +37,10 @@ export default async function ManagementLayout(props: LayoutProps<"/management">
 
       <div className="flex flex-1 flex-col">
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 bg-white px-6 py-4 dark:border-slate-800 dark:bg-slate-950">
-          <GlobalSearchForm />
+          <div className="flex items-center gap-4">
+            <BackButton />
+            <GlobalSearchForm />
+          </div>
           <div className="flex items-center gap-4">
             <div className="min-w-0 text-right">
               <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-50">
