@@ -1,7 +1,8 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
-import { COURSE_STATUSES, type CourseStatus } from "./status-enums";
+import { COURSE_STATUSES, type CourseStatus, type DegreeLevel } from "./status-enums";
+import { courseDegreeLevel } from "./academic-sessions";
 
 export { COURSE_STATUSES, type CourseStatus };
 
@@ -295,6 +296,9 @@ export interface CourseOption {
   code: string;
   name: string;
   credit_hours: number;
+  department: { id: string; name: string };
+  /** Same structural -> course-code-fallback classification as everywhere else (courseDegreeLevel in academic-sessions.ts) — never a second determination. */
+  degreeLevel: DegreeLevel | null;
 }
 
 /** Case/whitespace-insensitive lookup for the "course already exists" duplicate check ahead of creating a new course — courses.code's uniqueness is DB-enforced regardless, but a pre-check lets the UI point straight at the existing course instead of surfacing a raw constraint error. */
@@ -325,7 +329,11 @@ export async function getCourseOptions(): Promise<CourseOption[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("courses")
-    .select("id, code, name, credit_hours")
+    .select(
+      `id, code, name, credit_hours,
+       department:departments!inner ( id, name ),
+       program_courses ( program:programs ( degree_level ) )`
+    )
     .eq("status", "active")
     .order("code");
 
@@ -333,5 +341,22 @@ export async function getCourseOptions(): Promise<CourseOption[]> {
     console.error("getCourseOptions failed:", error);
     return [];
   }
-  return (data ?? []) as CourseOption[];
+
+  const rows = (data ?? []) as unknown as {
+    id: string;
+    code: string;
+    name: string;
+    credit_hours: number;
+    department: { id: string; name: string };
+    program_courses: { program: { degree_level: DegreeLevel } | null }[] | null;
+  }[];
+
+  return rows.map((r) => ({
+    id: r.id,
+    code: r.code,
+    name: r.name,
+    credit_hours: r.credit_hours,
+    department: r.department,
+    degreeLevel: courseDegreeLevel({ code: r.code, program_courses: r.program_courses }).level,
+  }));
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useRef } from "react";
+import { useActionState, useMemo, useRef, useState } from "react";
 import { fieldClasses, labelClasses } from "@/app/management/_components/form-styles";
 import { OFFERING_STATUSES } from "@/lib/management/status-enums";
 import type { CourseOfferingFormState } from "../actions";
@@ -13,8 +13,20 @@ const STATUS_LABELS: Record<(typeof OFFERING_STATUSES)[number], string> = {
   cancelled: "Cancelled",
 };
 
+const DEGREE_LEVEL_LABELS: Record<string, string> = {
+  master: "MS/M.Phil.",
+  phd: "Ph.D.",
+};
+const DEGREE_LEVEL_ORDER = ["master", "phd"] as const;
+
 export interface CourseOfferingFormOptions {
-  courses: { id: string; code: string; name: string }[];
+  courses: {
+    id: string;
+    code: string;
+    name: string;
+    department: { id: string; name: string };
+    degreeLevel: string | null;
+  }[];
   semesters: { id: string; name: string; academic_year: string }[];
 }
 
@@ -42,6 +54,33 @@ export function CourseOfferingForm({
   const [state, formAction, pending] = useActionState(action, undefined);
   const statusRef = useRef<HTMLSelectElement>(null);
 
+  // Degree Level -> Discipline are pure client-side filters over the
+  // already-fetched course list (same small-bounded-dataset reasoning as
+  // the Semester Courses drill-down) -- only course_id itself is an actual
+  // form field. Pre-seeded from the default course (edit form) so changing
+  // an existing offering's course starts from the right cascade instead of
+  // resetting to blank.
+  const defaultCourse = options.courses.find((c) => c.id === defaultValues?.course_id) ?? null;
+  const [level, setLevel] = useState<string>(defaultCourse?.degreeLevel ?? "");
+  const [deptId, setDeptId] = useState<string>(defaultCourse?.department.id ?? "");
+
+  const departmentsForLevel = useMemo(() => {
+    const map = new Map<string, { id: string; name: string }>();
+    for (const c of options.courses) {
+      if (level && c.degreeLevel !== level) continue;
+      map.set(c.department.id, c.department);
+    }
+    return [...map.values()].sort((a, b) => a.name.localeCompare(b.name));
+  }, [options.courses, level]);
+
+  const coursesForSelection = useMemo(
+    () =>
+      options.courses.filter(
+        (c) => (!level || c.degreeLevel === level) && (!deptId || c.department.id === deptId)
+      ),
+    [options.courses, level, deptId]
+  );
+
   return (
     <form
       action={formAction}
@@ -55,6 +94,48 @@ export function CourseOfferingForm({
       }}
       className="max-w-lg space-y-5 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950"
     >
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1">
+          <label htmlFor="degree_level_filter" className={labelClasses}>
+            Degree Level
+          </label>
+          <select
+            id="degree_level_filter"
+            className={fieldClasses}
+            value={level}
+            onChange={(e) => {
+              setLevel(e.target.value);
+              setDeptId("");
+            }}
+          >
+            <option value="">All</option>
+            {DEGREE_LEVEL_ORDER.map((l) => (
+              <option key={l} value={l}>
+                {DEGREE_LEVEL_LABELS[l]}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-1">
+          <label htmlFor="discipline_filter" className={labelClasses}>
+            Discipline
+          </label>
+          <select
+            id="discipline_filter"
+            className={fieldClasses}
+            value={deptId}
+            onChange={(e) => setDeptId(e.target.value)}
+          >
+            <option value="">All</option>
+            {departmentsForLevel.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       <div className="space-y-1">
         <label htmlFor="course_id" className={labelClasses}>
           Course
@@ -69,7 +150,7 @@ export function CourseOfferingForm({
           <option value="" disabled>
             Select a course
           </option>
-          {options.courses.map((c) => (
+          {coursesForSelection.map((c) => (
             <option key={c.id} value={c.id}>
               {c.code} — {c.name}
             </option>
@@ -77,6 +158,11 @@ export function CourseOfferingForm({
         </select>
         {options.courses.length === 0 && (
           <p className="text-xs text-slate-500 dark:text-slate-400">No active courses exist yet.</p>
+        )}
+        {options.courses.length > 0 && coursesForSelection.length === 0 && (
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            No courses match this Degree Level / Discipline combination.
+          </p>
         )}
       </div>
 

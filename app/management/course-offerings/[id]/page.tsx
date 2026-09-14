@@ -42,7 +42,17 @@ export default async function EditCourseOfferingPage(props: PageProps<"/manageme
   // current value.
   const courseOptions = courses.some((c) => c.id === offering.course_id)
     ? courses
-    : [{ id: offering.course_id, code: offering.course.code, name: offering.course.name, credit_hours: 0 }, ...courses];
+    : [
+        {
+          id: offering.course_id,
+          code: offering.course.code,
+          name: offering.course.name,
+          credit_hours: 0,
+          department: offering.discipline,
+          degreeLevel: offering.degreeLevel,
+        },
+        ...courses,
+      ];
 
   return (
     <div className="space-y-8">
