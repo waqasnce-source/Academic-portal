@@ -7,6 +7,7 @@ import {
 } from "@/lib/management/academic-sessions";
 import { SessionSelector } from "./_components/session-selector";
 import { SessionOverviewPanel } from "./_components/session-overview-panel";
+import { SemesterCardGrid } from "./_components/semester-card-grid";
 
 /**
  * Academic Sessions landing page: Academic Session -> Semester ->
@@ -28,6 +29,14 @@ export default async function AcademicSessionsPage() {
   const currentYear = getCurrentAcademicYear(sessions);
   const currentSession = currentYear ? sessions.find((s) => s.academicYear === currentYear) ?? null : null;
   const years = [...sessions].reverse().map((s) => s.academicYear);
+
+  // Nearest not-yet-started semester across every session, regardless of
+  // which academic year it belongs to — shown alongside the current one so
+  // "what's coming next" doesn't require digging into All Sessions below.
+  const upcoming = sessions
+    .flatMap((s) => s.semesters.map((sem) => ({ ...sem, academicYear: s.academicYear })))
+    .filter((sem) => sem.status === "upcoming")
+    .sort((a, b) => a.startDate.localeCompare(b.startDate))[0] ?? null;
 
   return (
     <div className="space-y-6">
@@ -75,6 +84,15 @@ export default async function AcademicSessionsPage() {
 
           {currentSession && (
             <SessionOverviewPanel session={currentSession} currentSemesterId={getCurrentSemesterId(currentSession)} />
+          )}
+
+          {upcoming && (
+            <div className="space-y-2">
+              <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                Upcoming — {upcoming.academicYear}
+              </h2>
+              <SemesterCardGrid semesters={[upcoming]} currentSemesterId={null} />
+            </div>
           )}
 
           <div>
