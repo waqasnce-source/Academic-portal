@@ -301,7 +301,7 @@ export interface StudentProgramOption {
 export interface StudentSpecializationOption {
   id: string;
   name: string;
-  department_id: string;
+  department: { id: string; name: string };
 }
 
 /** Options for the create/edit form's program and specialization selects. */
@@ -319,7 +319,7 @@ export async function getStudentFormOptions(): Promise<{
       .order("name"),
     supabase
       .from("specializations")
-      .select("id, name, department_id")
+      .select("id, name, department:departments!inner ( id, name )")
       .eq("is_active", true)
       .order("name"),
   ]);
@@ -329,7 +329,7 @@ export async function getStudentFormOptions(): Promise<{
 
   return {
     programs: (programsRes.data ?? []) as StudentProgramOption[],
-    specializations: (specializationsRes.data ?? []) as StudentSpecializationOption[],
+    specializations: (specializationsRes.data ?? []) as unknown as StudentSpecializationOption[],
   };
 }
 

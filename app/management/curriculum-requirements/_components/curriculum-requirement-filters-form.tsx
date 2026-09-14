@@ -6,6 +6,21 @@ import type {
 import { REQUIREMENT_CATEGORIES } from "@/lib/management/status-enums";
 import { fieldClasses, labelClasses } from "@/app/management/_components/form-styles";
 
+/** Groups specializations by discipline, sorted by discipline name — same "grouped by discipline" presentation used elsewhere, via native <optgroup> since this stays a plain server-rendered GET form (no client JS needed for a display-only grouping). */
+function groupByDiscipline(
+  specializations: CurriculumRequirementFilterOptions["specializations"]
+): [{ id: string; name: string }, CurriculumRequirementFilterOptions["specializations"]][] {
+  const map = new Map<string, { discipline: { id: string; name: string }; specializations: CurriculumRequirementFilterOptions["specializations"] }>();
+  for (const s of specializations) {
+    const entry = map.get(s.department.id) ?? { discipline: s.department, specializations: [] };
+    entry.specializations.push(s);
+    map.set(s.department.id, entry);
+  }
+  return [...map.values()]
+    .sort((a, b) => a.discipline.name.localeCompare(b.discipline.name))
+    .map((e) => [e.discipline, e.specializations]);
+}
+
 export function CurriculumRequirementFiltersForm({
   filters,
   options,
@@ -43,10 +58,14 @@ export function CurriculumRequirementFiltersForm({
           className={fieldClasses}
         >
           <option value="">All</option>
-          {options.specializations.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
+          {groupByDiscipline(options.specializations).map(([discipline, specializations]) => (
+            <optgroup key={discipline.id} label={discipline.name}>
+              {specializations.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
       </div>

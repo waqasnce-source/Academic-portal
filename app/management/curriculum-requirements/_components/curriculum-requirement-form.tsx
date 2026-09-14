@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState, useMemo, useState } from "react";
 import { fieldClasses, labelClasses } from "@/app/management/_components/form-styles";
 import { REQUIREMENT_CATEGORIES, PHD_ENTRY_BASIS_VALUES } from "@/lib/management/status-enums";
 import type { CurriculumRequirementFormState } from "../actions";
@@ -22,7 +22,7 @@ const ENTRY_BASIS_LABELS: Record<(typeof PHD_ENTRY_BASIS_VALUES)[number], string
 
 export interface CurriculumRequirementFormOptions {
   programs: { id: string; code: string; name: string }[];
-  specializations: { id: string; name: string; department_id: string }[];
+  specializations: { id: string; name: string; department: { id: string; name: string } }[];
   courses: { id: string; code: string; name: string; credit_hours: number }[];
 }
 
@@ -54,6 +54,22 @@ export function CurriculumRequirementForm({
     defaultValues?.course_id ? "course" : "category"
   );
 
+  // Discipline is a pure client-side filter narrowing the Specialization
+  // select, same pattern as the student and course-offering forms.
+  const defaultSpecialization = options.specializations.find((s) => s.id === defaultValues?.specialization_id) ?? null;
+  const [disciplineId, setDisciplineId] = useState<string>(defaultSpecialization?.department.id ?? "");
+
+  const disciplines = useMemo(() => {
+    const map = new Map<string, { id: string; name: string }>();
+    for (const s of options.specializations) map.set(s.department.id, s.department);
+    return [...map.values()].sort((a, b) => a.name.localeCompare(b.name));
+  }, [options.specializations]);
+
+  const specializationsForDiscipline = useMemo(
+    () => options.specializations.filter((s) => !disciplineId || s.department.id === disciplineId),
+    [options.specializations, disciplineId]
+  );
+
   return (
     <form
       action={formAction}
@@ -81,23 +97,43 @@ export function CurriculumRequirementForm({
         </select>
       </div>
 
-      <div className="space-y-1">
-        <label htmlFor="specialization_id" className={labelClasses}>
-          Specialization
-        </label>
-        <select
-          id="specialization_id"
-          name="specialization_id"
-          defaultValue={defaultValues?.specialization_id ?? ""}
-          className={fieldClasses}
-        >
-          <option value="">Applies to all specializations in this program</option>
-          {options.specializations.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1">
+          <label htmlFor="discipline_filter" className={labelClasses}>
+            Discipline
+          </label>
+          <select
+            id="discipline_filter"
+            className={fieldClasses}
+            value={disciplineId}
+            onChange={(e) => setDisciplineId(e.target.value)}
+          >
+            <option value="">All</option>
+            {disciplines.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-1">
+          <label htmlFor="specialization_id" className={labelClasses}>
+            Specialization
+          </label>
+          <select
+            id="specialization_id"
+            name="specialization_id"
+            defaultValue={defaultValues?.specialization_id ?? ""}
+            className={fieldClasses}
+          >
+            <option value="">Applies to all specializations in this program</option>
+            {specializationsForDiscipline.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="space-y-1">

@@ -42,7 +42,7 @@ export interface CurriculumRequirementsResult {
 
 export interface CurriculumRequirementFilterOptions {
   programs: { id: string; code: string; name: string }[];
-  specializations: { id: string; name: string; department_id: string }[];
+  specializations: { id: string; name: string; department: { id: string; name: string } }[];
 }
 
 export function parseCurriculumRequirementFilters(
@@ -142,7 +142,11 @@ export async function getCurriculumRequirementFilterOptions(): Promise<Curriculu
   const [{ data: programs, error: programsError }, { data: specializations, error: specializationsError }] =
     await Promise.all([
       supabase.from("programs").select("id, code, name").eq("status", "active").order("name"),
-      supabase.from("specializations").select("id, name, department_id").eq("is_active", true).order("name"),
+      supabase
+        .from("specializations")
+        .select("id, name, department:departments!inner ( id, name )")
+        .eq("is_active", true)
+        .order("name"),
     ]);
 
   if (programsError) console.error("getCurriculumRequirementFilterOptions programs failed:", programsError);
@@ -150,7 +154,10 @@ export async function getCurriculumRequirementFilterOptions(): Promise<Curriculu
     console.error("getCurriculumRequirementFilterOptions specializations failed:", specializationsError);
   }
 
-  return { programs: programs ?? [], specializations: specializations ?? [] };
+  return {
+    programs: programs ?? [],
+    specializations: (specializations ?? []) as unknown as CurriculumRequirementFilterOptions["specializations"],
+  };
 }
 
 export { getCourseOptions, type CourseOption } from "./courses";

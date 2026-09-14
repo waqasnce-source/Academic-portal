@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useMemo, useState } from "react";
 import { fieldClasses, labelClasses } from "@/app/management/_components/form-styles";
 import { STUDENT_STATUSES, PHD_ENTRY_BASIS_VALUES } from "@/lib/management/status-enums";
 import type { StudentStatus } from "@/lib/management/students";
@@ -39,6 +39,26 @@ export function StudentForm({
   submitLabel: string;
 }) {
   const [state, formAction, pending] = useActionState(action, undefined);
+
+  // Discipline is a pure client-side filter over the already-fetched
+  // specialization list (small, bounded dataset) — narrows the
+  // Specialization select instead of leaving one long alphabetical list,
+  // same pattern as the course-offering form's Degree Level/Discipline
+  // filters. Pre-seeded from the default specialization (edit form) so it
+  // doesn't reset to blank when editing an existing student.
+  const defaultSpecialization = specializations.find((s) => s.id === defaultValues?.specialization_id) ?? null;
+  const [disciplineId, setDisciplineId] = useState<string>(defaultSpecialization?.department.id ?? "");
+
+  const disciplines = useMemo(() => {
+    const map = new Map<string, { id: string; name: string }>();
+    for (const s of specializations) map.set(s.department.id, s.department);
+    return [...map.values()].sort((a, b) => a.name.localeCompare(b.name));
+  }, [specializations]);
+
+  const specializationsForDiscipline = useMemo(
+    () => specializations.filter((s) => !disciplineId || s.department.id === disciplineId),
+    [specializations, disciplineId]
+  );
 
   return (
     <form
@@ -108,18 +128,40 @@ export function StudentForm({
           />
         </div>
         <div className="space-y-1">
-          <label htmlFor="specialization_id" className={labelClasses}>
-            Specialization (optional)
+          <label htmlFor="discipline_filter" className={labelClasses}>
+            Discipline
           </label>
-          <select id="specialization_id" name="specialization_id" defaultValue={defaultValues?.specialization_id ?? ""} className={fieldClasses}>
-            <option value="">Not assigned</option>
-            {specializations.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
+          <select
+            id="discipline_filter"
+            className={fieldClasses}
+            value={disciplineId}
+            onChange={(e) => setDisciplineId(e.target.value)}
+          >
+            <option value="">All</option>
+            {disciplines.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name}
               </option>
             ))}
           </select>
         </div>
+      </div>
+
+      <div className="space-y-1">
+        <label htmlFor="specialization_id" className={labelClasses}>
+          Specialization (optional)
+        </label>
+        <select id="specialization_id" name="specialization_id" defaultValue={defaultValues?.specialization_id ?? ""} className={fieldClasses}>
+          <option value="">Not assigned</option>
+          {specializationsForDiscipline.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+        {specializations.length > 0 && specializationsForDiscipline.length === 0 && (
+          <p className="text-xs text-slate-500 dark:text-slate-400">No specializations exist for this discipline.</p>
+        )}
       </div>
 
       <div className="space-y-1">
