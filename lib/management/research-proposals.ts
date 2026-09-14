@@ -2,6 +2,7 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 import { type RawSearchParams, parsePage, parseText, escapeIlike } from "@/lib/management/query-params";
+import { sortByDesignationRank } from "@/lib/management/faculty-rank";
 import type { ResearchProposalRow } from "@/lib/academic/research";
 
 export { getResearchProposalsForProject, getLatestResearchProposal } from "@/lib/academic/research";
@@ -161,10 +162,15 @@ export interface SupervisorOption {
 
 export async function getFacultyOptions(): Promise<SupervisorOption[]> {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("faculty").select("id, name").eq("status", "active").order("name");
+  const { data, error } = await supabase
+    .from("faculty")
+    .select("id, name, designation")
+    .eq("status", "active")
+    .order("name");
   if (error) {
     console.error("getFacultyOptions failed:", error);
     return [];
   }
-  return (data ?? []) as SupervisorOption[];
+  const rows = (data ?? []) as { id: string; name: string; designation: string }[];
+  return sortByDesignationRank(rows, (r) => r.designation, (r) => r.name).map((r) => ({ id: r.id, name: r.name }));
 }

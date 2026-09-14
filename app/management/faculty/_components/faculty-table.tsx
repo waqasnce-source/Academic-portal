@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { FacultyRow, FacultyStatus } from "@/lib/management/faculty";
+import { sortByDesignationRank } from "@/lib/management/faculty-rank";
 import { toggleFacultyStatusAction } from "../actions";
 
 const STATUS_BADGE_CLASSES: Record<FacultyStatus, string> = {
@@ -27,6 +28,10 @@ function formatJoinedDate(value: string | null): string {
   });
 }
 
+function facultyDisplayName(member: FacultyRow): string {
+  return member.profile?.full_name ?? member.name;
+}
+
 /**
  * Groups faculty by discipline (department), matching the same
  * discipline-grouped presentation used for Semester -> Courses and the
@@ -34,7 +39,8 @@ function formatJoinedDate(value: string | null): string {
  * matching row unpaginated (see FACULTY_SAFETY_CAP) so a discipline's
  * roster is never split across pages/sections. "Not Assigned" is its own
  * section, sorted last, for faculty with no department on record rather
- * than hiding them.
+ * than hiding them. Within each discipline, rows are ordered by academic
+ * rank (sortByDesignationRank) rather than employee number.
  */
 function groupByDepartment(faculty: FacultyRow[]): { key: string; name: string; rows: FacultyRow[] }[] {
   const map = new Map<string, { name: string; rows: FacultyRow[] }>();
@@ -45,7 +51,11 @@ function groupByDepartment(faculty: FacultyRow[]): { key: string; name: string; 
     entry.rows.push(member);
     map.set(key, entry);
   }
-  const groups = [...map.entries()].map(([key, { name, rows }]) => ({ key, name, rows }));
+  const groups = [...map.entries()].map(([key, { name, rows }]) => ({
+    key,
+    name,
+    rows: sortByDesignationRank(rows, (r) => r.designation, facultyDisplayName),
+  }));
   groups.sort((a, b) => {
     if (a.key === "unassigned") return 1;
     if (b.key === "unassigned") return -1;
@@ -88,7 +98,12 @@ export function FacultyTable({
   }
 
   if (!groupByDiscipline) {
-    return <FacultyGroupTable rows={faculty} showDepartment />;
+    return (
+      <FacultyGroupTable
+        rows={sortByDesignationRank(faculty, (r) => r.designation, facultyDisplayName)}
+        showDepartment
+      />
+    );
   }
 
   const groups = groupByDepartment(faculty);

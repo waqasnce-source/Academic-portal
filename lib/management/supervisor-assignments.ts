@@ -2,6 +2,7 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 import { SUPERVISOR_ASSIGNMENT_ROLES, type SupervisorAssignmentRole } from "./status-enums";
+import { sortByDesignationRank } from "./faculty-rank";
 
 export { SUPERVISOR_ASSIGNMENT_ROLES, type SupervisorAssignmentRole };
 
@@ -181,7 +182,13 @@ export async function getSupervisorAssignmentFormOptions(): Promise<{
     full_name: s.name,
   }));
 
-  return { students: studentOptions, faculty: (faculty ?? []) as FacultyOption[] };
+  const facultyOptions = sortByDesignationRank(
+    (faculty ?? []) as FacultyOption[],
+    (f) => f.designation,
+    (f) => f.name
+  );
+
+  return { students: studentOptions, faculty: facultyOptions };
 }
 
 export interface SupervisorAssignmentInput {
