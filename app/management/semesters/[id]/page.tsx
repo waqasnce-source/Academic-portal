@@ -55,15 +55,6 @@ export default async function SemesterDetailPage(props: PageProps<"/management/s
 
       <SemesterTabs semesterId={id} active="courses" />
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Stat label="Courses" value={detail.semester.offeringCount} />
-        <Stat label="Credit Hours" value={detail.semester.totalCreditHours} />
-        <Stat label="Faculty" value={detail.semester.facultyCount} />
-        <Stat label="Students" value={detail.semester.studentCount} />
-        <Stat label="MS/M.Phil. Courses" value={detail.msPhilCourseCount} />
-        <Stat label="Ph.D. Courses" value={detail.phdCourseCount} />
-      </div>
-
       <div className="flex flex-wrap gap-2">
         <Link
           href="/management/course-offerings/new"
@@ -101,6 +92,15 @@ export default async function SemesterDetailPage(props: PageProps<"/management/s
       ) : (
         <SemesterCourseExplorer disciplines={detail.disciplines} />
       )}
+
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <Stat label="Courses" value={detail.semester.offeringCount} />
+        <Stat label="Credit Hours" value={detail.semester.totalCreditHours} />
+        <Stat label="Faculty" value={detail.semester.facultyCount} />
+        <Stat label="Students" value={detail.semester.studentCount} />
+        <Stat label="MS/M.Phil. Courses" value={detail.msPhilCourseCount} />
+        <Stat label="Ph.D. Courses" value={detail.phdCourseCount} />
+      </div>
     </div>
   );
 }
