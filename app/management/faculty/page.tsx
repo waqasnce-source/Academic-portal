@@ -60,6 +60,7 @@ export default async function ManagementFacultyPage(
           <FacultyTable
             faculty={faculty}
             hasActiveFilters={hasActiveFacultyFilters(filters)}
+            groupByDiscipline={!filters.departmentId}
           />
           {count > 0 && (
             <FacultyPagination filters={filters} page={page} totalPages={totalPages} />

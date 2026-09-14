@@ -27,12 +27,43 @@ function formatJoinedDate(value: string | null): string {
   });
 }
 
+/**
+ * Groups faculty by discipline (department), matching the same
+ * discipline-grouped presentation used for Semester -> Courses and the
+ * Specialization selects. This groups only the rows already fetched for
+ * the current server-paginated page (never re-architected into a
+ * client-side "fetch everything" page) -- safe at any institution scale,
+ * since a page is already capped at FACULTY_PAGE_SIZE rows. "Not
+ * Assigned" is its own section, sorted last, for faculty with no
+ * department on record rather than hiding them.
+ */
+function groupByDepartment(faculty: FacultyRow[]): { key: string; name: string; rows: FacultyRow[] }[] {
+  const map = new Map<string, { name: string; rows: FacultyRow[] }>();
+  for (const member of faculty) {
+    const key = member.department?.id ?? "unassigned";
+    const name = member.department?.name ?? "Not Assigned";
+    const entry = map.get(key) ?? { name, rows: [] };
+    entry.rows.push(member);
+    map.set(key, entry);
+  }
+  const groups = [...map.entries()].map(([key, { name, rows }]) => ({ key, name, rows }));
+  groups.sort((a, b) => {
+    if (a.key === "unassigned") return 1;
+    if (b.key === "unassigned") return -1;
+    return a.name.localeCompare(b.name);
+  });
+  return groups;
+}
+
 export function FacultyTable({
   faculty,
   hasActiveFilters,
+  groupByDiscipline = true,
 }: {
   faculty: FacultyRow[];
   hasActiveFilters: boolean;
+  /** Off when a single Department filter is already applied — grouping a list that's already one discipline is redundant. */
+  groupByDiscipline?: boolean;
 }) {
   if (faculty.length === 0) {
     return (
@@ -57,6 +88,27 @@ export function FacultyTable({
     );
   }
 
+  if (!groupByDiscipline) {
+    return <FacultyGroupTable rows={faculty} showDepartment />;
+  }
+
+  const groups = groupByDepartment(faculty);
+
+  return (
+    <div className="space-y-6">
+      {groups.map((group) => (
+        <section key={group.key} className="space-y-2">
+          <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            {group.name} ({group.rows.length})
+          </h2>
+          <FacultyGroupTable rows={group.rows} showDepartment={false} />
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function FacultyGroupTable({ rows, showDepartment }: { rows: FacultyRow[]; showDepartment: boolean }) {
   return (
     <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
       <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
@@ -74,9 +126,11 @@ export function FacultyTable({
             <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">
               Designation
             </th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">
-              Department
-            </th>
+            {showDepartment && (
+              <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">
+                Department
+              </th>
+            )}
             <th className="whitespace-nowrap px-4 py-2.5 text-left font-medium text-slate-500 dark:text-slate-400">
               Joined
             </th>
@@ -89,7 +143,7 @@ export function FacultyTable({
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-          {faculty.map((member) => (
+          {rows.map((member) => (
             <tr key={member.id}>
               <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-900 dark:text-slate-50">
                 {member.employee_number ?? "—"}
@@ -105,9 +159,11 @@ export function FacultyTable({
               <td className="whitespace-nowrap px-4 py-2.5 text-slate-700 dark:text-slate-300">
                 {member.designation}
               </td>
-              <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
-                {member.department?.name ?? "Not assigned"}
-              </td>
+              {showDepartment && (
+                <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
+                  {member.department?.name ?? "Not assigned"}
+                </td>
+              )}
               <td className="whitespace-nowrap px-4 py-2.5 text-slate-500 dark:text-slate-400">
                 {formatJoinedDate(member.joined_date)}
               </td>
