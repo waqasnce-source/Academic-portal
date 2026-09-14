@@ -30,12 +30,11 @@ function formatJoinedDate(value: string | null): string {
 /**
  * Groups faculty by discipline (department), matching the same
  * discipline-grouped presentation used for Semester -> Courses and the
- * Specialization selects. This groups only the rows already fetched for
- * the current server-paginated page (never re-architected into a
- * client-side "fetch everything" page) -- safe at any institution scale,
- * since a page is already capped at FACULTY_PAGE_SIZE rows. "Not
- * Assigned" is its own section, sorted last, for faculty with no
- * department on record rather than hiding them.
+ * Specialization selects. getFaculty() deliberately fetches every
+ * matching row unpaginated (see FACULTY_SAFETY_CAP) so a discipline's
+ * roster is never split across pages/sections. "Not Assigned" is its own
+ * section, sorted last, for faculty with no department on record rather
+ * than hiding them.
  */
 function groupByDepartment(faculty: FacultyRow[]): { key: string; name: string; rows: FacultyRow[] }[] {
   const map = new Map<string, { name: string; rows: FacultyRow[] }>();

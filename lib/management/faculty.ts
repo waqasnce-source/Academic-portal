@@ -156,40 +156,28 @@ const FACULTY_SELECT = `
  * applied to lib/management/students.ts after a huge/stale `page` value
  * was found to make PostgREST reject the range outright.
  */
+/**
+ * Safety ceiling on the unpaginated fetch below — NOT a normal-operation
+ * cap. An institution's faculty roster is a small, bounded dataset (unlike
+ * Students/Enrollments, which genuinely need server pagination), so this
+ * is wildly larger than any real faculty count is ever expected to reach.
+ */
+const FACULTY_SAFETY_CAP = 2000;
+
+/**
+ * Deliberately NOT server-paginated (see FACULTY_SAFETY_CAP) — grouping
+ * faculty by discipline (FacultyTable) requires the full matching result
+ * set in one place; slicing into FACULTY_PAGE_SIZE pages first would split
+ * one discipline's roster across multiple pages/sections, which is exactly
+ * the bug this replaced. Same "small bounded dataset" reasoning already
+ * applied to Semester -> Courses.
+ */
 export async function getFaculty(
   filters: FacultyFilters
 ): Promise<FacultyResult> {
   const supabase = await createClient();
 
-  let countQuery = supabase
-    .from("faculty")
-    .select("id", { count: "exact", head: true });
-
-  if (filters.status) countQuery = countQuery.eq("status", filters.status);
-  if (filters.employeeNumber) {
-    countQuery = countQuery.ilike("employee_number", `%${filters.employeeNumber}%`);
-  }
-  if (filters.designation) {
-    countQuery = countQuery.ilike("designation", `%${filters.designation}%`);
-  }
-  if (filters.departmentId) countQuery = countQuery.eq("department_id", filters.departmentId);
-  if (filters.q) {
-    const escaped = filters.q.replace(/[(),]/g, "");
-    countQuery = countQuery.or(`name.ilike.%${escaped}%,email.ilike.%${escaped}%`);
-  }
-
-  const { count, error: countError } = await countQuery;
-
-  if (countError) {
-    console.error("getFaculty count query failed:", countError);
-    return { data: [], count: 0, page: filters.page, error: "Could not load faculty records." };
-  }
-
-  const totalCount = count ?? 0;
-  const totalPages = Math.max(1, Math.ceil(totalCount / FACULTY_PAGE_SIZE));
-  const safePage = Math.min(Math.max(filters.page, 1), totalPages);
-
-  let dataQuery = supabase.from("faculty").select(FACULTY_SELECT);
+  let dataQuery = supabase.from("faculty").select(FACULTY_SELECT, { count: "exact" });
 
   if (filters.status) dataQuery = dataQuery.eq("status", filters.status);
   if (filters.employeeNumber) {
@@ -209,22 +197,19 @@ export async function getFaculty(
     dataQuery = dataQuery.or(`name.ilike.%${escaped}%,email.ilike.%${escaped}%`);
   }
 
-  const from = (safePage - 1) * FACULTY_PAGE_SIZE;
-  const to = from + FACULTY_PAGE_SIZE - 1;
-
-  const { data, error } = await dataQuery
+  const { data, count, error } = await dataQuery
     .order("employee_number", { ascending: true })
-    .range(from, to);
+    .range(0, FACULTY_SAFETY_CAP - 1);
 
   if (error) {
     console.error("getFaculty data query failed:", error);
-    return { data: [], count: 0, page: safePage, error: "Could not load faculty records." };
+    return { data: [], count: 0, page: 1, error: "Could not load faculty records." };
   }
 
   return {
     data: (data ?? []) as unknown as FacultyRow[],
-    count: totalCount,
-    page: safePage,
+    count: count ?? 0,
+    page: 1,
     error: null,
   };
 }

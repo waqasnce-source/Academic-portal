@@ -5,11 +5,9 @@ import {
   getFacultyFilterOptions,
   hasActiveFacultyFilters,
   parseFacultyFilters,
-  FACULTY_PAGE_SIZE,
 } from "@/lib/management/faculty";
 import { FacultyFiltersForm } from "./_components/faculty-filters-form";
 import { FacultyTable } from "./_components/faculty-table";
-import { FacultyPagination } from "./_components/faculty-pagination";
 
 export default async function ManagementFacultyPage(
   props: PageProps<"/management/faculty">
@@ -19,14 +17,10 @@ export default async function ManagementFacultyPage(
   const rawSearchParams = await props.searchParams;
   const filters = parseFacultyFilters(rawSearchParams);
 
-  const [{ data: faculty, count, page, error }, filterOptions] = await Promise.all([
+  const [{ data: faculty, count, error }, filterOptions] = await Promise.all([
     getFaculty(filters),
     getFacultyFilterOptions(),
   ]);
-
-  // getFaculty() already clamped an out-of-range `page` to the last valid
-  // page before querying, so `page` here is always safe to render.
-  const totalPages = Math.max(1, Math.ceil(count / FACULTY_PAGE_SIZE));
 
   return (
     <div className="space-y-6">
@@ -56,16 +50,11 @@ export default async function ManagementFacultyPage(
           {error}
         </div>
       ) : (
-        <>
-          <FacultyTable
-            faculty={faculty}
-            hasActiveFilters={hasActiveFacultyFilters(filters)}
-            groupByDiscipline={!filters.departmentId}
-          />
-          {count > 0 && (
-            <FacultyPagination filters={filters} page={page} totalPages={totalPages} />
-          )}
-        </>
+        <FacultyTable
+          faculty={faculty}
+          hasActiveFilters={hasActiveFacultyFilters(filters)}
+          groupByDiscipline={!filters.departmentId}
+        />
       )}
     </div>
   );
